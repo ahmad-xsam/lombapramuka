@@ -28,17 +28,22 @@ const ScoringComponent = {
     }
 
     container.innerHTML = `
-      <div class="page-header">
+      <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
         <div>
-          <h1 class="page-title">
+          <h1 class="page-title" style="display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+            <i data-lucide="${currentCompObj?.icon || 'trophy'}" style="color: var(--neon-cyan); width: 28px; height: 28px;"></i>
             ${currentCompObj?.name || 'Input Nilai Lomba'}
           </h1>
-          <p class="page-subtitle">Modul Input Penilaian & Perhitungan Peringkat Otomatis</p>
+          <p class="page-subtitle" style="margin-top: 0.25rem;">Modul Input Penilaian & Perhitungan Peringkat Otomatis</p>
         </div>
+
+        <button class="btn-yellow-pill" style="padding: 0.6rem 1.25rem; font-size: 0.85rem; background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; box-shadow: 0 4px 18px rgba(0, 245, 212, 0.45); border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; border-radius: 999px; transition: transform 0.2s;" onclick="ScoringComponent.openAddLombaModal()" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+          <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i> ➕ TAMBAH JENIS LOMBA
+        </button>
       </div>
 
       <!-- Sub Tabs for Competitions -->
-      <div class="sub-tabs" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+      <div class="sub-tabs" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; background: rgba(18, 12, 36, 0.6); padding: 0.75rem; border-radius: 14px; border: 1px solid rgba(0, 245, 212, 0.2); margin-bottom: 1.25rem;">
         <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1;">
           ${COMPETITIONS.map(c => `
             <div style="position: relative; display: inline-flex; align-items: center;">
@@ -46,29 +51,32 @@ const ScoringComponent = {
                 <i data-lucide="${c.icon || 'trophy'}" style="width: 14px; height: 14px;"></i> ${c.name}
               </button>
               ${c.isCustom ? `
-                <button type="button" title="Hapus Lomba Ini" onclick="event.stopPropagation(); ScoringComponent.confirmDeleteLomba('${c.id}', '${c.name.replace(/'/g, "\\'")}')" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; margin-left: -8px; margin-right: 4px; cursor: pointer; z-index: 2;">
+                <button type="button" title="Hapus Lomba Ini" onclick="event.stopPropagation(); ScoringComponent.confirmDeleteLomba('${c.id}', '${c.name.replace(/'/g, "\\'")}')" style="background: rgba(239, 68, 68, 0.25); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; margin-left: -8px; margin-right: 4px; cursor: pointer; z-index: 2;" onmouseover="this.style.background='#ef4444'; this.style.color='#fff';" onmouseout="this.style.background='rgba(239, 68, 68, 0.25)'; this.style.color='#ef4444';">
                   ✕
                 </button>
               ` : ''}
             </div>
           `).join('')}
         </div>
-        <button class="btn-yellow-pill" style="padding: 0.45rem 0.9rem; font-size: 0.78rem; background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; box-shadow: 0 4px 14px rgba(0, 245, 212, 0.4); border: none; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; flex-shrink: 0;" onclick="ScoringComponent.openAddLombaModal()">
+        <button class="btn-yellow-pill" style="padding: 0.45rem 0.95rem; font-size: 0.8rem; background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; box-shadow: 0 4px 14px rgba(0, 245, 212, 0.4); border: none; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; flex-shrink: 0; border-radius: 999px;" onclick="ScoringComponent.openAddLombaModal()">
           <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> TAMBAH JENIS LOMBA
         </button>
       </div>
 
       <!-- Score Entry Table Panel -->
       <div class="card-panel">
-        <div class="card-panel-header">
-          <h3 class="panel-title">
+        <div class="card-panel-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+          <h3 class="panel-title" style="display: flex; align-items: center; gap: 0.4rem;">
             <i data-lucide="${currentCompObj?.icon || 'trophy'}" style="color: var(--neon-cyan);"></i> Rekap Nilai ${currentCompObj?.name} (${leaderboard.length} ${isSchoolComp ? 'Sekolah' : 'Peserta'})
           </h3>
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
             <div style="font-size: 0.78rem; color: #94a3b8;">
               Kategori Filter: <strong style="color: var(--neon-cyan);">${activeCatLabel}</strong>
             </div>
-            <button class="btn-yellow-pill" style="padding: 0.35rem 0.75rem; font-size: 0.76rem; background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); border: none; font-weight: 700; cursor: pointer;" onclick="ScoringComponent.exportToExcel()">
+            <button class="btn-yellow-pill" style="padding: 0.4rem 0.85rem; font-size: 0.78rem; background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.35rem;" onclick="ScoringComponent.openAddLombaModal()">
+              <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i> Tambah Lomba
+            </button>
+            <button class="btn-yellow-pill" style="padding: 0.4rem 0.85rem; font-size: 0.78rem; background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); border: none; font-weight: 700; cursor: pointer;" onclick="ScoringComponent.exportToExcel()">
               Ekspor Excel
             </button>
           </div>

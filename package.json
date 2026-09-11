@@ -1,0 +1,16 @@
+{
+  "name": "simika-sipraja",
+  "version": "2.0.0",
+  "description": "SiMika - Sistem Rekapitulasi Lomba Pramuka Online Real-Time dengan MongoDB Atlas",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0"
+  }
+}

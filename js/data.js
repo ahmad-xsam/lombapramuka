@@ -1,6 +1,6 @@
 /* ==========================================================================
    SiMika - Data Models & Storage Manager
-   Initial Seed Data & LocalStorage Store
+   Initial Seed Data, LocalStorage Store, & MongoDB Atlas Auto-Sync Engine
    ========================================================================== */
 
 const SIMIKA_TEAMS_KEY = 'simika_teams_data_v2';
@@ -109,6 +109,7 @@ const INITIAL_SCORES = {
 class DataStore {
   constructor() {
     this.initStore();
+    this.syncWithMongoDB();
   }
 
   initStore() {
@@ -121,7 +122,6 @@ class DataStore {
     if (!localStorage.getItem(SIMIKA_SCORES_KEY)) {
       localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(INITIAL_SCORES));
     } else {
-      // Cleanup legacy seeded regu scores for joged_komando if present
       const storedScores = JSON.parse(localStorage.getItem(SIMIKA_SCORES_KEY)) || {};
       if (storedScores.joged_komando) {
         let cleaned = false;
@@ -138,6 +138,57 @@ class DataStore {
     }
     if (!localStorage.getItem(SIMIKA_USERS_KEY)) {
       localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(INITIAL_USERS));
+    }
+  }
+
+  async syncWithMongoDB() {
+    try {
+      const res = await fetch('/api/sync');
+      if (!res.ok) return;
+      const json = await res.json();
+      if (json.connected && json.data) {
+        const { competitions, teams, scores, users } = json.data;
+
+        // If MongoDB has competitions, update localStorage
+        if (Array.isArray(competitions) && competitions.length > 0) {
+          localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(competitions));
+        } else {
+          // Push initial competitions to MongoDB
+          this.competitions.forEach(c => this.postToMongo('/api/competitions', c));
+        }
+
+        if (Array.isArray(teams) && teams.length > 0) {
+          localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(teams));
+        } else {
+          this.teams.forEach(t => this.postToMongo('/api/teams', t));
+        }
+
+        if (scores && Object.keys(scores).length > 0) {
+          localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(scores));
+        } else {
+          this.postToMongo('/api/scores', { fullScores: this.scores });
+        }
+
+        if (Array.isArray(users) && users.length > 0) {
+          localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(users));
+        } else {
+          this.users.forEach(u => this.postToMongo('/api/users', u));
+        }
+      }
+    } catch (e) {
+      console.warn('[MongoDB Sync]: Operating offline / fallback to LocalStorage mode', e);
+    }
+  }
+
+  async postToMongo(url, payload, method = 'POST') {
+    try {
+      await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.warn(`[Mongo API Error ${url}]:`, err);
     }
   }
 
@@ -201,6 +252,9 @@ class DataStore {
       localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(allScores));
     }
 
+    // Sync to MongoDB Atlas
+    this.postToMongo('/api/competitions', newComp);
+
     return newComp;
   }
 
@@ -213,6 +267,9 @@ class DataStore {
       delete allScores[id];
       localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(allScores));
     }
+
+    // Sync deletion to MongoDB Atlas
+    this.postToMongo('/api/competitions', { id }, 'DELETE');
   }
 
   getTeams(categoryFilter = 'all') {
@@ -276,6 +333,9 @@ class DataStore {
       localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(allScores));
     }
 
+    // Sync to MongoDB Atlas
+    this.postToMongo('/api/teams', newTeam);
+
     return newTeam;
   }
 
@@ -294,6 +354,9 @@ class DataStore {
     if (modified) {
       localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(allScores));
     }
+
+    // Sync deletion to MongoDB Atlas
+    this.postToMongo('/api/teams', { id }, 'DELETE');
   }
 
   updateTeam(id, teamData) {
@@ -305,6 +368,10 @@ class DataStore {
         ...teamData
       };
       localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(current));
+
+      // Sync to MongoDB Atlas
+      this.postToMongo('/api/teams', current[index], 'PUT');
+
       return current[index];
     }
     return null;
@@ -322,6 +389,9 @@ class DataStore {
     }
     allScores[lombaId][teamId] = scoreObj;
     localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(allScores));
+
+    // Sync score to MongoDB Atlas
+    this.postToMongo('/api/scores', { lombaId, teamId, scoreObj });
   }
 
   addUser(userData) {
@@ -333,6 +403,10 @@ class DataStore {
     };
     current.push(newUser);
     localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(current));
+
+    // Sync to MongoDB Atlas
+    this.postToMongo('/api/users', newUser);
+
     return newUser;
   }
 
@@ -348,17 +422,22 @@ class DataStore {
       };
       localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(current));
 
-      // Sync active session if the current user updated their own profile
       const activeSession = this.currentUser;
       if (activeSession && activeSession.username === originalUsername) {
         this.setCurrentUser(current[index]);
       }
+
+      // Sync to MongoDB Atlas
+      this.postToMongo('/api/users', current[index]);
     }
   }
 
   deleteUser(username) {
     const updated = this.users.filter(u => u.username !== username);
     localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(updated));
+
+    // Sync deletion to MongoDB Atlas
+    this.postToMongo('/api/users', { username }, 'DELETE');
   }
 
   resetData() {
@@ -366,6 +445,9 @@ class DataStore {
     localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(INITIAL_TEAMS));
     localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(INITIAL_SCORES));
     localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(INITIAL_USERS));
+
+    // Reset MongoDB Atlas
+    this.postToMongo('/api/scores', { fullScores: INITIAL_SCORES });
   }
 }
 
@@ -380,4 +462,3 @@ Object.defineProperty(window, 'COMPETITIONS', {
   get: () => window.dataStore ? window.dataStore.competitions : INITIAL_COMPETITIONS,
   configurable: true
 });
-
