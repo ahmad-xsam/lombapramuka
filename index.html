@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SiMika - Sistem Rekapitulasi Pramuka Juara Online</title>
+  <meta name="description" content="Portal Live Score & Creator Byte AAA Gaming Admin Dashboard SiMika">
+
+  <!-- Favicon & PWA Manifest -->
+  <link rel="icon" type="image/png" href="assets/simika-logo.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f172a">
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- SheetJS / XLSX CDN for Excel Export -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Left Sidebar (Creator Byte Dark Theme - Bahasa Indonesia) -->
+    <aside class="sidebar" style="display: none;">
+      <div class="creator-brand" style="justify-content: center; padding-bottom: 1.25rem;">
+        <img src="assets/simika-logo.png" alt="SiMika Logo" style="height: 48px; width: auto; max-width: 200px; object-fit: contain; filter: drop-shadow(0 0 12px rgba(0, 245, 212, 0.45)); display: block; margin: 0 auto;">
+      </div>
+
+      <nav class="nav-section">
+        <ul class="creator-nav-menu">
+          <li class="nav-item active">
+            <button data-route="dashboard" onclick="window.appRouter.navigate('dashboard')">
+              <i data-lucide="layout-dashboard"></i> BERANDA ADMIN
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-route="participants" onclick="window.appRouter.navigate('participants')">
+              <i data-lucide="users"></i> DATA PESERTA REGU
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-route="scoring" onclick="window.appRouter.navigate('scoring')">
+              <i data-lucide="edit-3"></i> INPUT REKAP
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-route="draw" onclick="window.appRouter.navigate('draw')">
+              <i data-lucide="dices"></i> KOCOKAN LKBB
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-route="ranking" onclick="window.appRouter.navigate('ranking')">
+              <i data-lucide="crown"></i> PERINGKAT LOMBA
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-route="combined" onclick="window.appRouter.navigate('combined')">
+              <i data-lucide="layers"></i> MATERI GABUNGAN
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-route="announcement" onclick="window.appRouter.navigate('announcement')">
+              <i data-lucide="megaphone"></i> PENGUMUMAN LOMBA
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-route="users" onclick="window.appRouter.navigate('users')">
+              <i data-lucide="user-check"></i> KELOLA ADMIN
+            </button>
+          </li>
+          <li class="nav-item">
+            <button data-route="print" onclick="window.appRouter.navigate('print')">
+              <i data-lucide="printer"></i> CETAK SK RESMI
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="window.appRouter.closeMobileSidebar()"></div>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper" style="flex: 1; display: flex; flex-direction: column; min-width: 0;">
+      <!-- Top Header (Bahasa Indonesia) -->
+      <header class="creator-header" style="display: none;">
+        <button class="mobile-toggle-btn" onclick="window.appRouter.toggleMobileSidebar()" title="Buka Menu Sidebar">
+          <i data-lucide="menu" style="width: 22px; height: 22px; color: #ffffff;"></i>
+        </button>
+
+        <div class="cybet-search-bar">
+          <i data-lucide="search" style="color: #64748b; width: 16px; height: 16px;"></i>
+          <input type="text" id="global-search-input" placeholder="Cari kontingen, regu, atau lomba...">
+        </div>
+
+        <div class="header-right-actions">
+          <div id="network-status-badge" class="network-status-badge status-online">
+            <span class="status-dot"></span> 🟢 ONLINE
+          </div>
+
+          <div class="creator-user-profile">
+            <div style="width: 34px; height: 34px; background: linear-gradient(135deg, #a855f7, #06b6d4); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.8rem; color: #fff; flex-shrink: 0;">
+              SA
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+              <div style="font-size: 0.82rem; font-weight: 900; color: #fff; line-height: 1.2;" id="sidebar-user-name">Kak Juri Utama</div>
+              <div style="display: flex; align-items: center;">
+                <span class="creator-user-role-badge" id="sidebar-user-role">SUPER ADMIN</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-icon" style="background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.3); padding: 0.55rem; border-radius: 10px; flex-shrink: 0;" onclick="window.AuthComponent.logout()" title="Keluar / Logout">
+            <i data-lucide="log-out" style="width: 18px; height: 18px; color: #ef4444;"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Content Container -->
+      <main id="app-main-content" class="content-body">
+        <!-- Rendered dynamically by AppRouter -->
+      </main>
+    </div>
+  </div>
+
+  <!-- Component Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/utils/calculators.js"></script>
+  <script src="js/utils/security.js"></script>
+  <script src="js/utils/validation.js"></script>
+  <script src="js/components/public.js"></script>
+  <script src="js/components/auth.js"></script>
+  <script src="js/components/users.js"></script>
+  <script src="js/components/dashboard.js"></script>
+  <script src="js/components/participants.js"></script>
+  <script src="js/components/scoring.js"></script>
+  <script src="js/components/draw.js"></script>
+  <script src="js/components/ranking.js"></script>
+  <script src="js/components/combined.js"></script>
+  <script src="js/components/announcement.js"></script>
+  <script src="js/components/print.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
