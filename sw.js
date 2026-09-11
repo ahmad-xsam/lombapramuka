@@ -2,12 +2,13 @@
    SiMika PWA - Service Worker Engine (Offline-First Venue Caching)
    ========================================================================== */
 
-const CACHE_NAME = 'simika-pwa-v3';
+const CACHE_NAME = 'simika-pwa-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './css/styles.css',
   './assets/simika-logo.png',
+  './assets/simika-logo-hero.png',
   './js/data.js',
   './js/utils/calculators.js',
   './js/utils/security.js',
@@ -18,6 +19,7 @@ const ASSETS_TO_CACHE = [
   './js/components/dashboard.js',
   './js/components/participants.js',
   './js/components/scoring.js',
+  './js/components/draw.js',
   './js/components/ranking.js',
   './js/components/combined.js',
   './js/components/announcement.js',
