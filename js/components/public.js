@@ -170,11 +170,6 @@ const PublicComponent = {
 
         <!-- Live Scoreboard Section -->
         <section style="max-width: 1380px; margin: 2rem auto 0 auto; padding: 0 1.5rem; text-align: center; position: relative; z-index: 20;" id="live-scoreboard">
-          <div style="margin-bottom: 1rem;">
-            <button class="btn-moonlight-explore" style="background: linear-gradient(135deg, #00f5d4, #a855f7); color: #070a12; font-weight: 900; font-size: 0.95rem; padding: 0.6rem 1.5rem; border-radius: 999px;" onclick="window.appRouter.navigate('draw')">
-              🎲 DAFTAR TAMPIL LKBB (KOCOKAN NOMOR)
-            </button>
-          </div>
           <h2 style="font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 900; margin-bottom: 0.35rem; color: #ffffff;">
             PAPAN SKOR REKAPITULASI LIVE
           </h2>
