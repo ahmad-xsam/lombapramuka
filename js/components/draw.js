@@ -183,226 +183,303 @@ class DrawComponent {
     localStorage.setItem(key, JSON.stringify(storeObj));
   }
 
-  // Render Admin Draw Center UI
+  // Render Admin / Public Draw Center UI
   renderAdminDraw(container) {
     const schools = this.getEligibleSchools();
     const storeData = this.getDrawData();
     const currentDraws = storeData[this.activeLevel] || [];
     const isLocked = storeData.locked && storeData.locked[this.activeLevel];
+    const isPublic = !window.dataStore || !window.dataStore.currentUser;
+
+    if (!this.subTab) {
+      this.subTab = isPublic ? 'list' : 'draw';
+    }
 
     const drawnSchoolIds = currentDraws.map(d => d.schoolId);
     const remainingSchools = schools.filter(s => !drawnSchoolIds.includes(s.id));
     const lastResult = currentDraws.length > 0 ? currentDraws[currentDraws.length - 1] : null;
 
     container.innerHTML = `
-      <div style="width: 100%;">
+      <div style="width: 100%; max-width: 1380px; margin: 0 auto; ${isPublic ? 'padding: 1.5rem 1rem;' : ''}">
+        
+        ${isPublic ? `
+          <header style="display: flex; justify-content: space-between; align-items: center; background: rgba(18, 12, 36, 0.85); backdrop-filter: blur(12px); padding: 1rem 1.5rem; border-radius: 20px; border: 1px solid rgba(0, 245, 212, 0.3); margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <a href="#" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none;" onclick="window.appRouter.navigate('public')">
+              <img src="assets/simika-logo.png" alt="SiMika Logo" style="height: 42px; width: auto; filter: drop-shadow(0 0 10px rgba(0, 245, 212, 0.5));">
+            </a>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <button class="btn-outline" style="border-color: var(--neon-cyan); color: var(--neon-cyan); font-weight: 800;" onclick="window.appRouter.navigate('public')">
+                <i data-lucide="arrow-left"></i> Kembali ke Beranda
+              </button>
+              <button class="btn-outline" style="background: rgba(168, 85, 247, 0.15); border-color: #a855f7; color: #c084fc; font-weight: 800;" onclick="window.appRouter.navigate('login')">
+                <i data-lucide="key"></i> Login Admin
+              </button>
+            </div>
+          </header>
+        ` : ''}
+
         <!-- Header Title & Control Quick Links -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
           <div>
-            <h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 900; font-size: 1.6rem; color: #ffffff; display: flex; align-items: center; gap: 0.6rem;">
-              <i data-lucide="dices" style="color: var(--neon-cyan); width: 32px; height: 32px;"></i>
-              KOCOKAN NOMOR TAMPIL LKBB
+            <h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-weight: 900; font-size: clamp(1.4rem, 2.5vw, 1.9rem); color: #ffffff; display: flex; align-items: center; gap: 0.6rem;">
+              <i data-lucide="dices" style="color: var(--neon-cyan); width: 34px; height: 34px;"></i>
+              DAFTAR TAMPIL & KOCOKAN LKBB
             </h2>
-            <p style="margin: 0.25rem 0 0 0; color: #94a3b8; font-size: 0.82rem;">
-              Modul Pengundian Urutan Tampil LKBB Real-Time, Live Stage Display & Schedule Generator
+            <p style="margin: 0.25rem 0 0 0; color: #94a3b8; font-size: 0.85rem;">
+              Jadwal Urutan Tampil Resmi & Hasil Kocokan Nomor Baris-Berbaris (LKBB) Real-Time
             </p>
           </div>
 
           <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-            <button class="btn-outline" style="background: rgba(0, 245, 212, 0.1); border-color: var(--neon-cyan); color: var(--neon-cyan);" onclick="window.appRouter.navigate(window.dataStore.currentUser ? 'dashboard' : 'public')">
-              <i data-lucide="arrow-left"></i> ${window.dataStore && window.dataStore.currentUser ? 'BERANDA ADMIN' : 'BERANDA UTAMA'}
-            </button>
+            ${!isPublic ? `
+              <button class="btn-outline" style="background: rgba(0, 245, 212, 0.1); border-color: var(--neon-cyan); color: var(--neon-cyan);" onclick="window.appRouter.navigate('dashboard')">
+                <i data-lucide="arrow-left"></i> BERANDA ADMIN
+              </button>
+            ` : ''}
             <button class="btn-yellow-pill" onclick="window.DrawComponent.setViewMode('stage')">
               <i data-lucide="tv"></i> LAYAR PANGGUNG (LED)
             </button>
-            <button class="btn-outline" style="background: rgba(168, 85, 247, 0.15); border-color: #a855f7; color: #c084fc;" onclick="window.DrawComponent.setViewMode('mc')">
-              <i data-lucide="mic"></i> MODE MC / CALLING
-            </button>
+            ${!isPublic ? `
+              <button class="btn-outline" style="background: rgba(168, 85, 247, 0.15); border-color: #a855f7; color: #c084fc;" onclick="window.DrawComponent.setViewMode('mc')">
+                <i data-lucide="mic"></i> MODE MC / CALLING
+              </button>
+            ` : ''}
           </div>
         </div>
 
-        <!-- Filter Level & Mode Selector -->
-        <div class="card-panel" style="margin-bottom: 1.5rem; background: rgba(15, 23, 42, 0.6); padding: 1rem 1.25rem;">
+        <!-- Filter Level & Sub-Tab Switcher Bar -->
+        <div class="card-panel" style="margin-bottom: 1.5rem; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(0, 245, 212, 0.25); padding: 1rem 1.25rem;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            
             <!-- Level Filter Pills -->
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <span style="font-size: 0.8rem; font-weight: 800; color: #94a3b8;">Tingkat Lomba:</span>
-              <button class="cat-pill ${this.activeLevel === 'sd' ? 'active' : ''}" onclick="window.DrawComponent.setLevel('sd')">
-                PENGGALANG SD
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span style="font-size: 0.82rem; font-weight: 800; color: #94a3b8; margin-right: 0.25rem;">PILIH TINGKAT:</span>
+              <button class="cat-pill ${this.activeLevel === 'sd' ? 'active' : ''}" style="padding: 0.45rem 1.1rem; font-weight: 800;" onclick="window.DrawComponent.setLevel('sd')">
+                🏫 SD / MI
               </button>
-              <button class="cat-pill ${this.activeLevel === 'smp' ? 'active' : ''}" onclick="window.DrawComponent.setLevel('smp')">
-                PENGGALANG SMP
+              <button class="cat-pill ${this.activeLevel === 'smp' ? 'active' : ''}" style="padding: 0.45rem 1.1rem; font-weight: 800;" onclick="window.DrawComponent.setLevel('smp')">
+                🛡️ SMP / MTS
               </button>
-              <button class="cat-pill ${this.activeLevel === 'penegak' ? 'active' : ''}" onclick="window.DrawComponent.setLevel('penegak')">
-                SANGGA PENEGAK
+              <button class="cat-pill ${this.activeLevel === 'penegak' ? 'active' : ''}" style="padding: 0.45rem 1.1rem; font-weight: 800;" onclick="window.DrawComponent.setLevel('penegak')">
+                ⚜️ SMA / SMK / PENEGAK
               </button>
             </div>
 
-            <!-- Mode Selector -->
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <span style="font-size: 0.8rem; font-weight: 800; color: #94a3b8;">Metode Undian:</span>
-              <select id="draw-mode-select" class="form-control" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.8rem; font-weight: 700; background: #1e293b; color: #00f5d4; border-color: var(--neon-cyan);" onchange="window.DrawComponent.setMode(this.value)">
-                <option value="modeB" ${this.activeMode === 'modeB' ? 'selected' : ''}>Mode B — Kocok Urutan Tampil (Rekomendasi Operasional)</option>
-                <option value="modeA" ${this.activeMode === 'modeA' ? 'selected' : ''}>Mode A — Kocok Nomor Peserta (Nomor Otomatis)</option>
-              </select>
+            <!-- Main View Mode Tabs (Simple Schedule vs Admin Spin Wheel) -->
+            <div style="display: flex; background: rgba(0, 0, 0, 0.5); padding: 4px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+              <button class="sub-tab-btn ${this.subTab === 'list' ? 'active' : ''}" style="border-radius: 8px; padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: 800;" onclick="window.DrawComponent.setSubTab('list')">
+                📋 DAFTAR URUTAN TAMPIL
+              </button>
+              <button class="sub-tab-btn ${this.subTab === 'draw' ? 'active' : ''}" style="border-radius: 8px; padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: 800;" onclick="window.DrawComponent.setSubTab('draw')">
+                🎲 KOCOKAN & UNDIAN
+              </button>
             </div>
           </div>
         </div>
 
-        <!-- 3 Grid Dashboard Section -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
-          
-          <!-- Column 1: Main Slot Machine Slot Control Card -->
-          <div class="card-panel" style="display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; background: linear-gradient(180deg, #151d2a 0%, #0d131f 100%); border: 1px solid var(--border-creator); position: relative; overflow: hidden;">
-            <div style="position: absolute; top: 10px; right: 12px;">
-              ${isLocked 
-                ? `<span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);"><i data-lucide="lock"></i> DIKUNCI</span>`
-                : `<span class="badge badge-completed"><i data-lucide="unlock"></i> SIAP KOCOK</span>`}
-            </div>
-
-            <div style="width: 100%;">
-              <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; letter-spacing: 0.08em; text-transform: uppercase;">
-                PESERTA TERSISA UNTUK DIUNDI
+        ${this.subTab === 'draw' ? `
+          <!-- 3 Grid Dashboard Section for Drawing -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+            
+            <!-- Column 1: Main Slot Machine Slot Control Card -->
+            <div class="card-panel" style="display: flex; flex-direction: column; justify-content: space-between; align-items: center; text-align: center; background: linear-gradient(180deg, #151d2a 0%, #0d131f 100%); border: 1px solid var(--border-creator); position: relative; overflow: hidden;">
+              <div style="position: absolute; top: 10px; right: 12px;">
+                ${isLocked 
+                  ? `<span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);"><i data-lucide="lock"></i> DIKUNCI</span>`
+                  : `<span class="badge badge-completed"><i data-lucide="unlock"></i> SIAP KOCOK</span>`}
               </div>
-              <div style="font-size: 3rem; font-weight: 900; color: var(--neon-cyan); font-family: 'Poppins', sans-serif; line-height: 1; margin: 0.5rem 0;">
-                ${remainingSchools.length} <span style="font-size: 1rem; color: #64748b; font-weight: 600;">/ ${schools.length} Sekolah</span>
-              </div>
-            </div>
 
-            <!-- Big Interactive Animated Number Slot Box -->
-            <div id="slot-number-display" style="width: 100%; max-width: 260px; height: 130px; background: rgba(0, 0, 0, 0.6); border: 2px solid var(--neon-cyan); border-radius: 16px; margin: 1.25rem 0; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: inset 0 0 25px rgba(0, 245, 212, 0.2), 0 0 20px rgba(0, 245, 212, 0.15); transition: all 0.3s ease;">
-              <div id="slot-number-val" style="font-size: 3.5rem; font-weight: 900; color: var(--neon-yellow); font-family: 'Poppins', sans-serif; letter-spacing: 0.05em;">
-                ${lastResult ? String(lastResult.drawNumber).padStart(3, '0') : '???'}
-              </div>
-              <div id="slot-team-name" style="font-size: 0.8rem; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; margin-top: -4px;">
-                ${lastResult ? lastResult.schoolName : 'Klik Mulai Kocokan'}
-              </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div style="width: 100%; display: flex; flex-direction: column; gap: 0.75rem;">
-              <button class="btn-yellow-pill" style="width: 100%; padding: 0.85rem; font-size: 1.05rem; font-weight: 900; justify-content: center;" ${remainingSchools.length === 0 || isLocked || this.isSpinning ? 'disabled' : ''} onclick="window.DrawComponent.startDrawAnimation()">
-                <i data-lucide="dices"></i> ${this.isSpinning ? 'MEMUTAR OTOMATIS...' : '🎲 MULAI KOCOKAN'}
-              </button>
-
-              <div style="display: flex; gap: 0.5rem;">
-                <button class="btn-outline" style="flex: 1; font-size: 0.74rem; justify-content: center;" ${currentDraws.length === 0 || isLocked ? 'disabled' : ''} onclick="window.DrawComponent.undoLastDraw()">
-                  <i data-lucide="undo-2"></i> Batalkan Terakhir
-                </button>
-                <button class="btn-outline" style="flex: 1; font-size: 0.74rem; justify-content: center; border-color: rgba(239, 68, 68, 0.4); color: #f87171;" onclick="window.DrawComponent.toggleLockState()">
-                  <i data-lucide="${isLocked ? 'unlock' : 'lock'}"></i> ${isLocked ? 'Buka Kunci' : 'Kunci Hasil'}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Column 2: Preview Peserta Yang Akan Diundi -->
-          <div class="card-panel" style="display: flex; flex-direction: column;">
-            <div class="card-panel-header" style="padding-bottom: 0.6rem; margin-bottom: 0.75rem;">
-              <h3 class="panel-title" style="font-size: 0.92rem;">
-                <i data-lucide="list-checks" style="color: var(--neon-cyan);"></i>
-                Daftar Peserta Belum Dikocok (${remainingSchools.length})
-              </h3>
-            </div>
-
-            <div style="flex: 1; overflow-y: auto; max-height: 280px; padding-right: 0.25rem;">
-              ${remainingSchools.length === 0 ? `
-                <div style="text-align: center; color: #34d399; padding: 2rem; font-weight: 700; font-size: 0.85rem;">
-                  🎉 Seluruh peserta (${schools.length} Sekolah) telah selesai dikocok!
+              <div style="width: 100%;">
+                <div style="font-size: 0.75rem; font-weight: 800; color: #94a3b8; letter-spacing: 0.08em; text-transform: uppercase;">
+                  PESERTA TERSISA UNTUK DIUNDI
                 </div>
-              ` : `
-                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
-                  ${remainingSchools.map((s, idx) => `
-                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.55rem 0.75rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;">
-                      <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="color: #64748b; font-weight: 700; font-size: 0.74rem;">#${idx + 1}</span>
-                        <strong style="color: #ffffff;">${s.pangkalan}</strong>
-                      </div>
-                      <span class="badge badge-pending" style="font-size: 0.65rem;">⚪ Belum Dikocok</span>
-                    </div>
-                  `).join('')}
+                <div style="font-size: 3rem; font-weight: 900; color: var(--neon-cyan); font-family: 'Poppins', sans-serif; line-height: 1; margin: 0.5rem 0;">
+                  ${remainingSchools.length} <span style="font-size: 1rem; color: #64748b; font-weight: 600;">/ ${schools.length} Sekolah</span>
                 </div>
-              `}
-            </div>
-          </div>
+              </div>
 
-          <!-- Column 3: Auto-Schedule & Call Center Link -->
-          <div class="card-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
-            <div>
+              <!-- Big Interactive Animated Number Slot Box -->
+              <div id="slot-number-display" style="width: 100%; max-width: 260px; height: 130px; background: rgba(0, 0, 0, 0.6); border: 2px solid var(--neon-cyan); border-radius: 16px; margin: 1.25rem 0; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: inset 0 0 25px rgba(0, 245, 212, 0.2), 0 0 20px rgba(0, 245, 212, 0.15); transition: all 0.3s ease;">
+                <div id="slot-number-val" style="font-size: 3.5rem; font-weight: 900; color: var(--neon-yellow); font-family: 'Poppins', sans-serif; letter-spacing: 0.05em;">
+                  ${lastResult ? String(lastResult.drawNumber).padStart(3, '0') : '???'}
+                </div>
+                <div id="slot-team-name" style="font-size: 0.8rem; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; margin-top: -4px;">
+                  ${lastResult ? lastResult.schoolName : 'Klik Mulai Kocokan'}
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div style="width: 100%; display: flex; flex-direction: column; gap: 0.75rem;">
+                <button class="btn-yellow-pill" style="width: 100%; padding: 0.85rem; font-size: 1.05rem; font-weight: 900; justify-content: center;" ${remainingSchools.length === 0 || isLocked || this.isSpinning ? 'disabled' : ''} onclick="window.DrawComponent.startDrawAnimation()">
+                  <i data-lucide="dices"></i> ${this.isSpinning ? 'MEMUTAR OTOMATIS...' : '🎲 MULAI KOCOKAN'}
+                </button>
+
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn-outline" style="flex: 1; font-size: 0.74rem; justify-content: center;" ${currentDraws.length === 0 || isLocked ? 'disabled' : ''} onclick="window.DrawComponent.undoLastDraw()">
+                    <i data-lucide="undo-2"></i> Batalkan Terakhir
+                  </button>
+                  <button class="btn-outline" style="flex: 1; font-size: 0.74rem; justify-content: center; border-color: rgba(239, 68, 68, 0.4); color: #f87171;" onclick="window.DrawComponent.toggleLockState()">
+                    <i data-lucide="${isLocked ? 'unlock' : 'lock'}"></i> ${isLocked ? 'Buka Kunci' : 'Kunci Hasil'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 2: Preview Peserta Yang Akan Diundi -->
+            <div class="card-panel" style="display: flex; flex-direction: column;">
               <div class="card-panel-header" style="padding-bottom: 0.6rem; margin-bottom: 0.75rem;">
                 <h3 class="panel-title" style="font-size: 0.92rem;">
-                  <i data-lucide="calendar-clock" style="color: var(--neon-yellow);"></i>
-                  Jadwal Otomatis LKBB
+                  <i data-lucide="list-checks" style="color: var(--neon-cyan);"></i>
+                  Daftar Peserta Belum Dikocok (${remainingSchools.length})
                 </h3>
               </div>
 
-              <div style="background: rgba(0,0,0,0.25); border-radius: 10px; padding: 0.85rem; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
-                <div style="font-size: 0.76rem; color: #94a3b8; margin-bottom: 0.6rem;">Generate Jadwal Berdasarkan Urutan Tampil</div>
-                <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.75rem;">
-                  <div>
-                    <label style="font-size: 0.68rem; color: #cbd5e1;">Jam Mulai LKBB</label>
-                    <input type="time" id="sch-start-time" class="form-control" style="padding: 0.25rem 0.5rem; font-size: 0.78rem;" value="08:00"/>
+              <div style="flex: 1; overflow-y: auto; max-height: 280px; padding-right: 0.25rem;">
+                ${remainingSchools.length === 0 ? `
+                  <div style="text-align: center; color: #34d399; padding: 2rem; font-weight: 700; font-size: 0.85rem;">
+                    🎉 Seluruh peserta (${schools.length} Sekolah) telah selesai dikocok!
                   </div>
-                  <div>
-                    <label style="font-size: 0.68rem; color: #cbd5e1;">Durasi Per Tampil (Menit)</label>
-                    <input type="number" id="sch-duration" class="form-control" style="padding: 0.25rem 0.5rem; font-size: 0.78rem;" value="15" min="5" max="60"/>
+                ` : `
+                  <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    ${remainingSchools.map((s, idx) => `
+                      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.55rem 0.75rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                          <span style="color: #64748b; font-weight: 700; font-size: 0.74rem;">#${idx + 1}</span>
+                          <strong style="color: #ffffff;">${s.pangkalan}</strong>
+                        </div>
+                        <span class="badge badge-pending" style="font-size: 0.65rem;">⚪ Belum Dikocok</span>
+                      </div>
+                    `).join('')}
                   </div>
-                </div>
-                <button class="btn-outline" style="width: 100%; font-size: 0.76rem; justify-content: center; background: rgba(0, 245, 212, 0.1); border-color: var(--neon-cyan); color: var(--neon-cyan);" onclick="window.DrawComponent.generateSchedule()">
-                  <i data-lucide="wand-2"></i> Auto-Generate Jadwal LKBB
-                </button>
+                `}
               </div>
             </div>
 
-            <div style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 0.75rem; text-align: center;">
-              <span style="font-size: 0.72rem; color: #94a3b8;">Format Hasil Undian Siap Diintegrasikan dengan Modul Penilaian Juri</span>
+            <!-- Column 3: Auto-Schedule & Call Center Link -->
+            <div class="card-panel" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div class="card-panel-header" style="padding-bottom: 0.6rem; margin-bottom: 0.75rem;">
+                  <h3 class="panel-title" style="font-size: 0.92rem;">
+                    <i data-lucide="calendar-clock" style="color: var(--neon-yellow);"></i>
+                    Jadwal Otomatis LKBB
+                  </h3>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.25); border-radius: 10px; padding: 0.85rem; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.05);">
+                  <div style="font-size: 0.76rem; color: #94a3b8; margin-bottom: 0.6rem;">Generate Jadwal Berdasarkan Urutan Tampil</div>
+                  <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 0.75rem;">
+                    <div>
+                      <label style="font-size: 0.68rem; color: #cbd5e1;">Jam Mulai LKBB</label>
+                      <input type="time" id="sch-start-time" class="form-control" style="padding: 0.25rem 0.5rem; font-size: 0.78rem;" value="08:00"/>
+                    </div>
+                    <div>
+                      <label style="font-size: 0.68rem; color: #cbd5e1;">Durasi Per Tampil (Menit)</label>
+                      <input type="number" id="sch-duration" class="form-control" style="padding: 0.25rem 0.5rem; font-size: 0.78rem;" value="15" min="5" max="60"/>
+                    </div>
+                  </div>
+                  <button class="btn-outline" style="width: 100%; font-size: 0.76rem; justify-content: center; background: rgba(0, 245, 212, 0.1); border-color: var(--neon-cyan); color: var(--neon-cyan);" onclick="window.DrawComponent.generateSchedule()">
+                    <i data-lucide="wand-2"></i> Auto-Generate Jadwal LKBB
+                  </button>
+                </div>
+              </div>
+
+              <div style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 0.75rem; text-align: center;">
+                <span style="font-size: 0.72rem; color: #94a3b8;">Format Hasil Undian Siap Diintegrasikan dengan Modul Penilaian Juri</span>
+              </div>
             </div>
+
           </div>
+        ` : ''}
 
-        </div>
+        <!-- Simplified User-Friendly Table & Search View -->
+        <div class="card-panel" style="background: rgba(18, 12, 36, 0.9); border: 1px solid rgba(0, 245, 212, 0.3);">
+          <div class="card-panel-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <h3 class="panel-title" style="display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem;">
+                <i data-lucide="list-numbered" style="color: var(--neon-cyan);"></i>
+                DAFTAR URUTAN TAMPIL RESMI (${this.activeLevel.toUpperCase()})
+              </h3>
+              <div style="font-size: 0.78rem; color: #94a3b8; margin-top: 0.2rem;">
+                Total <strong>${currentDraws.length}</strong> Sekolah telah dikocok dari <strong>${schools.length}</strong> Pangkalan terdaftar.
+              </div>
+            </div>
 
-        <!-- Real-Time Hasil Kocokan Table Panel -->
-        <div class="card-panel">
-          <div class="card-panel-header" style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 class="panel-title" style="display: flex; align-items: center; gap: 0.4rem;">
-              <i data-lucide="trophy" style="color: #fbbf24;"></i>
-              TABEL HASIL URUTAN TAMPIL RESMI (${this.activeLevel.toUpperCase()})
-            </h3>
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <!-- Quick Search Input -->
+              <div style="position: relative; min-width: 260px;">
+                <i data-lucide="search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #64748b;"></i>
+                <input type="text" id="draw-search-input" placeholder="Cari nama sekolah / nomor urut..." class="form-control" style="padding-left: 2rem; font-size: 0.82rem; background: rgba(0, 0, 0, 0.4); border-color: rgba(255, 255, 255, 0.15);" oninput="window.DrawComponent.filterDrawTable(this.value)">
+              </div>
 
-            <div style="display: flex; gap: 0.5rem;">
-              <button class="btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.76rem;" onclick="window.print()">
-                <i data-lucide="printer"></i> Cetak Hasil Kocokan
+              <button class="btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.78rem; font-weight: 700;" onclick="window.print()">
+                <i data-lucide="printer"></i> Cetak Hasil
               </button>
             </div>
           </div>
 
           <div class="table-container">
-            <table class="admin-table">
+            <table class="admin-table" id="draw-schedule-table">
               <thead>
                 <tr>
-                  <th style="width: 12%;">Urutan Tampil</th>
-                  <th style="width: 15%;">Nomor Tampil</th>
-                  <th style="width: 35%;">Sekolah / Pangkalan</th>
-                  <th style="width: 18%;">Waktu Pengundian</th>
-                  <th style="width: 20%; text-align: center;">Status Tampil</th>
+                  <th style="width: 15%;">Nomor Urut Tampil</th>
+                  <th style="width: 40%;">Sekolah / Pangkalan</th>
+                  <th style="width: 20%;">Estimasi Waktu Tampil</th>
+                  <th style="width: 25%; text-align: center;">Status Lapangan</th>
                 </tr>
               </thead>
               <tbody>
                 ${currentDraws.length === 0 ? `
-                  <tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">Belum ada nomor yang dikocok. Klik tombol "MULAI KOCOKAN" di atas.</td></tr>
-                ` : currentDraws.map((item, idx) => `
                   <tr>
-                    <td><strong style="color: var(--neon-cyan); font-size: 1rem;">#${idx + 1}</strong></td>
-                    <td><span class="rank-badge-game rank-1" style="font-size: 0.85rem; padding: 0.2rem 0.6rem;">${String(item.drawNumber).padStart(3, '0')}</span></td>
-                    <td><strong style="color: #ffffff; font-size: 0.95rem;">${item.schoolName}</strong></td>
-                    <td><span style="font-size: 0.75rem; color: #94a3b8;">${new Date(item.timestamp).toLocaleTimeString('id-ID')}</span></td>
-                    <td style="text-align: center;">
-                      <span class="badge badge-completed" style="font-weight: 800;">
-                        <i data-lucide="check-circle" style="width: 12px; height: 12px;"></i> SUDAH DIKOCOK
-                      </span>
+                    <td colspan="4" style="text-align: center; color: #94a3b8; padding: 3rem 1rem;">
+                      <div style="display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
+                        <i data-lucide="dices" style="width: 48px; height: 48px; color: var(--neon-cyan); opacity: 0.5;"></i>
+                        <div style="font-size: 1.05rem; font-weight: 700; color: #ffffff;">Belum Ada Nomor Tampil yang Dikocok</div>
+                        <div style="font-size: 0.85rem; color: #64748b; max-width: 450px;">
+                          Panitia belum mengundi nomor urut untuk tingkat <strong>${this.activeLevel.toUpperCase()}</strong>. Silakan periksa kembali nanti atau hubungi panitia lomba.
+                        </div>
+                      </div>
                     </td>
                   </tr>
-                `).join('')}
+                ` : currentDraws.map((item, idx) => {
+                  const startTimeMinutes = 8 * 60 + (idx * 15);
+                  const hours = Math.floor(startTimeMinutes / 60);
+                  const mins = startTimeMinutes % 60;
+                  const timeFormatted = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')} WIB`;
+
+                  return `
+                    <tr class="draw-row-item">
+                      <td>
+                        <span class="rank-badge-game rank-1" style="font-size: 1rem; padding: 0.3rem 0.8rem; font-family: 'Poppins', sans-serif;">
+                          #${String(item.drawNumber).padStart(3, '0')}
+                        </span>
+                      </td>
+                      <td>
+                        <strong style="color: #ffffff; font-size: 1.05rem; font-family: 'Poppins', sans-serif;">${item.schoolName}</strong>
+                        <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 2px;">Tingkat ${this.activeLevel.toUpperCase()}</div>
+                      </td>
+                      <td>
+                        <div style="display: flex; align-items: center; gap: 0.4rem; color: var(--neon-yellow); font-weight: 700; font-size: 0.9rem;">
+                          <i data-lucide="clock" style="width: 14px; height: 14px;"></i> ${timeFormatted}
+                        </div>
+                      </td>
+                      <td style="text-align: center;">
+                        ${idx === 0 ? `
+                          <span class="badge" style="background: rgba(0, 245, 212, 0.2); color: var(--neon-cyan); border: 1px solid var(--neon-cyan); font-weight: 800; font-size: 0.78rem; padding: 4px 12px;">
+                            🟢 SEDANG TAMPIL
+                          </span>
+                        ` : idx === 1 ? `
+                          <span class="badge" style="background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); font-weight: 800; font-size: 0.78rem; padding: 4px 12px;">
+                            🟡 PERSIAPAN (NEXT UP)
+                          </span>
+                        ` : `
+                          <span class="badge badge-completed" style="font-weight: 700; font-size: 0.75rem; opacity: 0.85;">
+                            ⚪ MENUNGGU GILIRAN
+                          </span>
+                        `}
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
               </tbody>
             </table>
           </div>
@@ -667,6 +744,23 @@ class DrawComponent {
     const durVal = Number(document.getElementById('sch-duration')?.value) || 15;
 
     alert(`✅ JADWAL TER-GENERATE:\nMulai: ${startVal} WIB\nDurasi Per Tampil: ${durVal} Menit.\n\nJadwal LKBB otomatis diperbarui berdasarkan urutan kocokan!`);
+  }
+
+  setSubTab(subTabName) {
+    this.subTab = subTabName;
+    this.render(document.getElementById('app-main-content'));
+  }
+
+  filterDrawTable(query) {
+    const q = query.toLowerCase().trim();
+    document.querySelectorAll('#draw-schedule-table tbody tr.draw-row-item').forEach(row => {
+      const text = row.textContent.toLowerCase();
+      if (text.includes(q)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
   }
 
   setLevel(lvl) {
