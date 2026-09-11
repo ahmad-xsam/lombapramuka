@@ -37,20 +37,32 @@ const ScoringComponent = {
         </div>
       </div>
 
-      <!-- Sub Tabs for 10 Competitions -->
-      <div class="sub-tabs">
-        ${COMPETITIONS.map(c => `
-          <button class="sub-tab-btn ${c.id === this.currentLomba ? 'active' : ''}" onclick="ScoringComponent.switchLomba('${c.id}')">
-            ${c.name}
-          </button>
-        `).join('')}
+      <!-- Sub Tabs for Competitions -->
+      <div class="sub-tabs" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1;">
+          ${COMPETITIONS.map(c => `
+            <div style="position: relative; display: inline-flex; align-items: center;">
+              <button class="sub-tab-btn ${c.id === this.currentLomba ? 'active' : ''}" onclick="ScoringComponent.switchLomba('${c.id}')" style="display: flex; align-items: center; gap: 0.35rem;">
+                <i data-lucide="${c.icon || 'trophy'}" style="width: 14px; height: 14px;"></i> ${c.name}
+              </button>
+              ${c.isCustom ? `
+                <button type="button" title="Hapus Lomba Ini" onclick="event.stopPropagation(); ScoringComponent.confirmDeleteLomba('${c.id}', '${c.name.replace(/'/g, "\\'")}')" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 50%; width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; margin-left: -8px; margin-right: 4px; cursor: pointer; z-index: 2;">
+                  ✕
+                </button>
+              ` : ''}
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn-yellow-pill" style="padding: 0.45rem 0.9rem; font-size: 0.78rem; background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; box-shadow: 0 4px 14px rgba(0, 245, 212, 0.4); border: none; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; flex-shrink: 0;" onclick="ScoringComponent.openAddLombaModal()">
+          <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> TAMBAH JENIS LOMBA
+        </button>
       </div>
 
       <!-- Score Entry Table Panel -->
       <div class="card-panel">
         <div class="card-panel-header">
           <h3 class="panel-title">
-            Rekap Nilai ${currentCompObj?.name} (${leaderboard.length} ${isSchoolComp ? 'Sekolah' : 'Peserta'})
+            <i data-lucide="${currentCompObj?.icon || 'trophy'}" style="color: var(--neon-cyan);"></i> Rekap Nilai ${currentCompObj?.name} (${leaderboard.length} ${isSchoolComp ? 'Sekolah' : 'Peserta'})
           </h3>
           <div style="display: flex; align-items: center; gap: 0.75rem;">
             <div style="font-size: 0.78rem; color: #94a3b8;">
@@ -217,8 +229,36 @@ const ScoringComponent = {
             <th style="text-align: right;">Aksi</th>
           </tr>
         `;
-      default:
-        return `<tr><th>Peringkat</th><th>ID Regu</th><th>Regu</th><th>Total</th><th>Aksi</th></tr>`;
+      default: {
+        const cObj = COMPETITIONS.find(c => c.id === this.currentLomba);
+        if (cObj && cObj.type === 'dual') {
+          return `
+            <tr>
+              <th style="width: 70px; text-align: center;">Peringkat</th>
+              <th style="width: 100px; text-align: center;">ID Regu</th>
+              <th>Nama Regu / Sangga</th>
+              <th style="text-align: center;">Kategori</th>
+              <th style="width: 110px; text-align: center;">Nilai Teori</th>
+              <th style="width: 110px; text-align: center;">Nilai Praktek</th>
+              <th style="width: 110px; text-align: center;">Total Skor</th>
+              <th style="width: 130px; text-align: center;">Keterangan</th>
+              <th style="width: 110px; text-align: right;">Aksi</th>
+            </tr>
+          `;
+        }
+        return `
+          <tr>
+            <th style="width: 70px; text-align: center;">Peringkat</th>
+            <th style="width: 100px; text-align: center;">ID Regu</th>
+            <th>Nama Regu / Sangga</th>
+            <th style="text-align: center;">Kategori</th>
+            <th style="width: 120px; text-align: center;">Nilai Utama</th>
+            <th style="width: 120px; text-align: center;">Total Skor</th>
+            <th style="width: 130px; text-align: center;">Keterangan</th>
+            <th style="width: 110px; text-align: right;">Aksi</th>
+          </tr>
+        `;
+      }
     }
   },
 
@@ -233,7 +273,7 @@ const ScoringComponent = {
   hasValidScore(scoreObj) {
     if (!scoreObj || typeof scoreObj !== 'object') return false;
 
-    // Single score competitions (banksoal, pioneering, sandi, morse, semaphore, ketangkasan)
+    // Single score competitions (banksoal, pioneering, sandi, morse, semaphore, ketangkasan, custom single)
     if (typeof scoreObj.score === 'number' && scoreObj.score > 0) return true;
 
     // Administrasi
@@ -241,7 +281,7 @@ const ScoringComponent = {
         (scoreObj.kwitansi || 0) > 0 || (scoreObj.mandat || 0) > 0 || (scoreObj.ijin || 0) > 0 ||
         (scoreObj.asuransi || 0) > 0 || (scoreObj.bumbung || 0) > 0) return true;
 
-    // P3K
+    // P3K or dual score custom
     if ((scoreObj.teori || 0) > 0 || (scoreObj.praktek || 0) > 0) return true;
 
     // Joged Komando
@@ -414,8 +454,42 @@ const ScoringComponent = {
           </tr>
         `;
       }
-      default:
-        return '';
+      default: {
+        const s = scoreObj || {};
+        const cObj = COMPETITIONS.find(c => c.id === this.currentLomba);
+        const catObj = CATEGORIES.find(c => c.id === team.category);
+        if (cObj && cObj.type === 'dual') {
+          return `
+            <tr>
+              <td><span class="rank-badge-game ${rankClass}">${rankLabel}</span></td>
+              <td><span class="badge badge-id-regu">${reguIdCode}</span></td>
+              <td><strong style="color: #fff;">${team.name}</strong><br><span style="font-size: 0.72rem; color: #94a3b8;">${team.pangkalan}</span></td>
+              <td><span class="badge ${catObj?.badgeClass}">${catObj?.short || '-'}</span></td>
+              <td>${hasData ? (s.teori ?? 0) : '-'}</td>
+              <td>${hasData ? (s.praktek ?? 0) : '-'}</td>
+              <td>${totalDisplay}</td>
+              <td>${this.renderKetCell(item)}</td>
+              <td style="text-align: right;">
+                ${this.renderActionButton(team.id, scoreObj)}
+              </td>
+            </tr>
+          `;
+        }
+        return `
+          <tr>
+            <td><span class="rank-badge-game ${rankClass}">${rankLabel}</span></td>
+            <td><span class="badge badge-id-regu">${reguIdCode}</span></td>
+            <td><strong style="color: #fff;">${team.name}</strong><br><span style="font-size: 0.72rem; color: #94a3b8;">${team.pangkalan}</span></td>
+            <td><span class="badge ${catObj?.badgeClass}">${catObj?.short || '-'}</span></td>
+            <td>${hasData ? (s.score ?? 0) : '-'}</td>
+            <td>${totalDisplay}</td>
+            <td>${this.renderKetCell(item)}</td>
+            <td style="text-align: right;">
+              ${this.renderActionButton(team.id, scoreObj)}
+            </td>
+          </tr>
+        `;
+      }
     }
   },
 
@@ -545,13 +619,23 @@ const ScoringComponent = {
         </div>
       `;
     } else {
-      // Single Score Competitions
-      formBody = `
-        <div class="form-group">
-          <label>Nilai Utama ${compObj.name}</label>
-          <input type="number" id="s-single-score" class="form-control" value="${existingScore.score ?? 0}" min="0" max="100"/>
-        </div>
-      `;
+      // Single Score or Custom Dual Score Competitions
+      const cObj = COMPETITIONS.find(c => c.id === this.currentLomba);
+      if (cObj && cObj.type === 'dual') {
+        formBody = `
+          <div class="form-grid">
+            <div class="form-group"><label>Nilai Teori (${cObj.name})</label><input type="number" id="s-teori" class="form-control" value="${existingScore.teori ?? 0}" min="0" max="100"/></div>
+            <div class="form-group"><label>Nilai Praktek (${cObj.name})</label><input type="number" id="s-praktek" class="form-control" value="${existingScore.praktek ?? 0}" min="0" max="100"/></div>
+          </div>
+        `;
+      } else {
+        formBody = `
+          <div class="form-group">
+            <label>Nilai Utama ${cObj ? cObj.name : 'Lomba'}</label>
+            <input type="number" id="s-single-score" class="form-control" value="${existingScore.score ?? 0}" min="0" max="100"/>
+          </div>
+        `;
+      }
     }
 
     const modalHTML = `
@@ -559,7 +643,7 @@ const ScoringComponent = {
         <div class="modal-container">
           <div class="modal-header">
             <div>
-              <h3 class="modal-title">Input Nilai: ${compObj.name}</h3>
+              <h3 class="modal-title">Input Nilai: ${compObj ? compObj.name : this.currentLomba}</h3>
               <p style="font-size: 0.8rem; color: var(--neon-cyan); font-weight: 700; margin-top: 0.15rem;">${headerTitle}</p>
             </div>
             <button class="btn-outline" type="button" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;" onclick="ScoringComponent.closeModal()">✕</button>
@@ -593,7 +677,7 @@ const ScoringComponent = {
   },
 
   closeModal() {
-    document.querySelectorAll('#score-input-modal, #score-finalcheck-modal').forEach(el => el.remove());
+    document.querySelectorAll('#score-input-modal, #score-finalcheck-modal, #add-lomba-modal').forEach(el => el.remove());
   },
 
   saveScore(e, teamId) {
@@ -659,7 +743,13 @@ const ScoringComponent = {
         juri3: getVal('dt-j3')
       };
     } else {
-      scoreObj.score = getVal('s-single-score');
+      const cObj = COMPETITIONS.find(c => c.id === this.currentLomba);
+      if (cObj && cObj.type === 'dual') {
+        scoreObj.teori = getVal('s-teori');
+        scoreObj.praktek = getVal('s-praktek');
+      } else {
+        scoreObj.score = getVal('s-single-score');
+      }
     }
 
     if (this.currentLomba === 'joged_komando' || this.currentLomba === 'lkbb') {
@@ -1012,6 +1102,103 @@ const ScoringComponent = {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  },
+
+  openAddLombaModal() {
+    this.closeModal();
+
+    const modalHTML = `
+      <div class="modal-overlay open" id="add-lomba-modal" onclick="if(event.target === this) ScoringComponent.closeModal()">
+        <div class="modal-container" style="max-width: 520px;">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem; color: #fff;">
+                <i data-lucide="plus-circle" style="color: var(--neon-cyan);"></i> TAMBAH JENIS LOMBA BARU
+              </h3>
+              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.15rem;">Tambah mata lomba baru ke dalam sistem rekapitulasi SiMika</p>
+            </div>
+            <button class="btn-outline" type="button" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;" onclick="ScoringComponent.closeModal()">✕</button>
+          </div>
+          <form onsubmit="ScoringComponent.saveNewLomba(event)">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label style="font-weight: 700; color: #fff;">Nama Jenis Lomba <span style="color: #ef4444;">*</span></label>
+              <input type="text" id="nl-name" class="form-control" placeholder="Contoh: Lomba Hasta Karya / Lomba Pidato" required />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label style="font-weight: 700; color: #fff;">Skema / Format Penilaian</label>
+              <select id="nl-type" class="form-control">
+                <option value="single">Skor Tunggal / Single Score (0 - 100 Pts)</option>
+                <option value="dual">Skor Ganda (Nilai Teori + Nilai Praktek)</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label style="font-weight: 700; color: #fff;">Pilih Ikon Mata Lomba</label>
+              <select id="nl-icon" class="form-control">
+                <option value="trophy">🏆 Trophy / Piala</option>
+                <option value="award">🥇 Award / Medali</option>
+                <option value="star">⭐ Star / Bintang</option>
+                <option value="shield">🛡️ Shield / Perisai</option>
+                <option value="flag">🚩 Flag / Bendera</option>
+                <option value="zap">⚡ Zap / Ketangkasan</option>
+                <option value="heart-pulse">❤️ Heart / P3K</option>
+                <option value="compass">🧭 Compass / Pioneering</option>
+                <option value="key">🔑 Key / Sandi</option>
+                <option value="radio">📻 Radio / Morse</option>
+                <option value="file-text">📄 File / Administrasi</option>
+                <option value="music">🎵 Music / Joged</option>
+                <option value="palette">🎨 Palette / Arts</option>
+                <option value="box">📦 Box / Hasta Karya</option>
+                <option value="target">🎯 Target / Ketepatan</option>
+                <option value="sparkles">✨ Sparkles / Spesial</option>
+              </select>
+            </div>
+
+            <div class="modal-footer" style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
+              <button type="button" class="btn-outline" onclick="ScoringComponent.closeModal()">Batal</button>
+              <button type="submit" class="btn-yellow-pill" style="background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; border: none; padding: 0.6rem 1.2rem; border-radius: 999px; cursor: pointer;">
+                Simpan Jenis Lomba
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    lucide.createIcons();
+  },
+
+  saveNewLomba(e) {
+    e.preventDefault();
+    const nameInput = document.getElementById('nl-name');
+    const typeInput = document.getElementById('nl-type');
+    const iconInput = document.getElementById('nl-icon');
+
+    if (!nameInput || !nameInput.value.trim()) return;
+
+    const name = nameInput.value.trim();
+    const type = typeInput ? typeInput.value : 'single';
+    const icon = iconInput ? iconInput.value : 'trophy';
+
+    const newComp = window.dataStore.addCompetition({ name, type, icon });
+    this.closeModal();
+    this.currentLomba = newComp.id;
+    this.render(document.getElementById('app-main-content'));
+
+    if (window.SecurityEngine) {
+      window.SecurityEngine.showWatermarkToast(`🏆 Jenis Lomba "${newComp.name}" Berhasil Ditambahkan!`);
+    }
+  },
+
+  confirmDeleteLomba(lombaId, name) {
+    if (confirm(`Apakah Anda yakin ingin menghapus jenis lomba "${name}"?\nSemua data nilai lomba ini akan terhapus.`)) {
+      window.dataStore.deleteCompetition(lombaId);
+      const firstComp = window.dataStore.competitions[0];
+      this.currentLomba = firstComp ? firstComp.id : 'administrasi';
+      this.render(document.getElementById('app-main-content'));
+    }
   }
 };
 

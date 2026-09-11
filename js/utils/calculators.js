@@ -128,7 +128,11 @@ const Calculators = {
       case 'ketangkasan': return this.calculateKetangkasan(scoreObj);
       case 'joged_komando': return this.calculateJogedKomando(scoreObj).total;
       case 'lkbb': return this.calculateLKBB(scoreObj).total;
-      default: return 0;
+      default:
+        if (typeof scoreObj.score === 'number' || typeof scoreObj.score === 'string') {
+          return Number(scoreObj.score) || 0;
+        }
+        return (Number(scoreObj.teori) || 0) + (Number(scoreObj.praktek) || 0);
     }
   },
 

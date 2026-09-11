@@ -7,6 +7,7 @@ const SIMIKA_TEAMS_KEY = 'simika_teams_data_v2';
 const SIMIKA_SCORES_KEY = 'simika_scores_data_v2';
 const SIMIKA_USERS_KEY = 'simika_users_data_v2';
 const SIMIKA_SESSION_KEY = 'simika_session_user_v2';
+const SIMIKA_COMPETITIONS_KEY = 'simika_competitions_data_v2';
 
 const CATEGORIES = [
   { id: 'sd_pa', level: 'sd', gender: 'pa', name: 'Penggalang SD Putra', label: 'Penggalang SD Putra', short: 'SD PUTRA', badgeClass: 'badge-sd-pa' },
@@ -17,17 +18,17 @@ const CATEGORIES = [
   { id: 'penegak_pi', level: 'penegak', gender: 'pi', name: 'Sangga Penegak Putri', label: 'Sangga Penegak Putri', short: 'PENEGAK PUTRI', badgeClass: 'badge-penegak-pi' }
 ];
 
-const COMPETITIONS = [
-  { id: 'administrasi', name: 'Lomba Administrasi', icon: 'file-text' },
-  { id: 'banksoal', name: 'Lomba Bank Soal', icon: 'help-circle' },
-  { id: 'p3k', name: 'Lomba P3K', icon: 'heart-pulse' },
-  { id: 'pioneering', name: 'Lomba Pioneering', icon: 'compass' },
-  { id: 'sandi', name: 'Lomba Sandi', icon: 'key' },
-  { id: 'morse', name: 'Lomba Morse', icon: 'radio' },
-  { id: 'semaphore', name: 'Lomba Semaphore', icon: 'flag' },
-  { id: 'ketangkasan', name: 'Lomba Ketangkasan', icon: 'zap' },
-  { id: 'joged_komando', name: 'Lomba Joged Komando', icon: 'music' },
-  { id: 'lkbb', name: 'Lomba LKBB', icon: 'shield' }
+const INITIAL_COMPETITIONS = [
+  { id: 'administrasi', name: 'Lomba Administrasi', icon: 'file-text', type: 'administrasi' },
+  { id: 'banksoal', name: 'Lomba Bank Soal', icon: 'help-circle', type: 'single' },
+  { id: 'p3k', name: 'Lomba P3K', icon: 'heart-pulse', type: 'dual' },
+  { id: 'pioneering', name: 'Lomba Pioneering', icon: 'compass', type: 'single' },
+  { id: 'sandi', name: 'Lomba Sandi', icon: 'key', type: 'single' },
+  { id: 'morse', name: 'Lomba Morse', icon: 'radio', type: 'single' },
+  { id: 'semaphore', name: 'Lomba Semaphore', icon: 'flag', type: 'single' },
+  { id: 'ketangkasan', name: 'Lomba Ketangkasan', icon: 'zap', type: 'single' },
+  { id: 'joged_komando', name: 'Lomba Joged Komando', icon: 'music', type: 'school' },
+  { id: 'lkbb', name: 'Lomba LKBB', icon: 'shield', type: 'school' }
 ];
 
 const INITIAL_TEAMS = [
@@ -111,6 +112,9 @@ class DataStore {
   }
 
   initStore() {
+    if (!localStorage.getItem(SIMIKA_COMPETITIONS_KEY)) {
+      localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(INITIAL_COMPETITIONS));
+    }
     if (!localStorage.getItem(SIMIKA_TEAMS_KEY)) {
       localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(INITIAL_TEAMS));
     }
@@ -137,6 +141,10 @@ class DataStore {
     }
   }
 
+  get competitions() {
+    return JSON.parse(localStorage.getItem(SIMIKA_COMPETITIONS_KEY)) || INITIAL_COMPETITIONS;
+  }
+
   get teams() {
     return JSON.parse(localStorage.getItem(SIMIKA_TEAMS_KEY)) || [];
   }
@@ -158,6 +166,52 @@ class DataStore {
       sessionStorage.setItem(SIMIKA_SESSION_KEY, JSON.stringify(user));
     } else {
       sessionStorage.removeItem(SIMIKA_SESSION_KEY);
+    }
+  }
+
+  addCompetition(compData) {
+    const current = this.competitions;
+    const rawId = (compData.name || 'Lomba Baru')
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^lomba_/, '');
+    const id = compData.id || `lomba_${rawId}_${Date.now().toString().slice(-4)}`;
+    
+    let compName = compData.name.trim();
+    if (!compName.toLowerCase().startsWith('lomba ')) {
+      compName = `Lomba ${compName}`;
+    }
+
+    const newComp = {
+      id,
+      name: compName,
+      icon: compData.icon || 'trophy',
+      type: compData.type || 'single', // 'single' | 'dual'
+      isCustom: true
+    };
+
+    current.push(newComp);
+    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(current));
+
+    // Ensure score bucket exists
+    const allScores = this.scores;
+    if (!allScores[id]) {
+      allScores[id] = {};
+      localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(allScores));
+    }
+
+    return newComp;
+  }
+
+  deleteCompetition(id) {
+    const updated = this.competitions.filter(c => c.id !== id);
+    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(updated));
+
+    const allScores = this.scores;
+    if (allScores[id]) {
+      delete allScores[id];
+      localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(allScores));
     }
   }
 
@@ -308,6 +362,7 @@ class DataStore {
   }
 
   resetData() {
+    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(INITIAL_COMPETITIONS));
     localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(INITIAL_TEAMS));
     localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(INITIAL_SCORES));
     localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(INITIAL_USERS));
@@ -315,8 +370,14 @@ class DataStore {
 }
 
 window.CATEGORIES = CATEGORIES;
-window.COMPETITIONS = COMPETITIONS;
+window.INITIAL_COMPETITIONS = INITIAL_COMPETITIONS;
 window.INITIAL_TEAMS = INITIAL_TEAMS;
 window.INITIAL_SCORES = INITIAL_SCORES;
 window.INITIAL_USERS = INITIAL_USERS;
 window.dataStore = new DataStore();
+
+Object.defineProperty(window, 'COMPETITIONS', {
+  get: () => window.dataStore ? window.dataStore.competitions : INITIAL_COMPETITIONS,
+  configurable: true
+});
+

@@ -45,7 +45,7 @@ const DashboardComponent = {
 
           <div class="creator-metric-card">
             <div class="creator-metric-label">🏆 STATUS MATA LOMBA</div>
-            <div class="creator-metric-val" style="color: #34d399;">10 / 10 Lomba</div>
+            <div class="creator-metric-val" style="color: #34d399;">${COMPETITIONS.length} / ${COMPETITIONS.length} Lomba</div>
             <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 0.25rem;">Modul Penilaian Terhubung</div>
           </div>
         </div>
@@ -62,10 +62,12 @@ const DashboardComponent = {
                 Pantauan real-time status penginputan nilai regu/sekolah oleh Tim Rekap Nilai
               </p>
             </div>
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <span style="font-size: 0.78rem; font-weight: 700; color: #94a3b8;">Grand Progress:</span>
-              <div style="background: rgba(0, 245, 212, 0.15); border: 1px solid var(--neon-cyan); padding: 0.3rem 0.75rem; border-radius: 20px; font-weight: 900; font-size: 0.82rem; color: var(--neon-cyan);">
-                ${overall.percentage}% Terisi
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <button class="btn-yellow-pill" style="padding: 0.4rem 0.85rem; font-size: 0.78rem; background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; box-shadow: 0 4px 14px rgba(0, 245, 212, 0.4); border: none; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;" onclick="window.appRouter.navigate('scoring'); setTimeout(() => window.ScoringComponent.openAddLombaModal(), 100);">
+                <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> TAMBAH JENIS LOMBA
+              </button>
+              <div style="display: flex; align-items: center; gap: 0.35rem; background: rgba(0, 245, 212, 0.15); border: 1px solid var(--neon-cyan); padding: 0.3rem 0.75rem; border-radius: 20px; font-weight: 900; font-size: 0.82rem; color: var(--neon-cyan);">
+                Grand Progress: ${overall.percentage}%
               </div>
             </div>
           </div>
@@ -93,7 +95,7 @@ const DashboardComponent = {
               </div>
 
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; font-size: 0.72rem; color: #cbd5e1; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 0.6rem;">
-                <span><i data-lucide="check-square" style="width: 12px; height: 12px; vertical-align: middle; color: #00f5d4;"></i> ${levels.sd.completedCompCount} / 10 Lomba Selesai</span>
+                <span><i data-lucide="check-square" style="width: 12px; height: 12px; vertical-align: middle; color: #00f5d4;"></i> ${levels.sd.completedCompCount} / ${COMPETITIONS.length} Lomba Selesai</span>
                 <button class="btn-action-input-nilai" onclick="window.appRouter.navigate('scoring')">
                   <i data-lucide="edit-3"></i> Rekap SD
                 </button>
@@ -121,7 +123,7 @@ const DashboardComponent = {
               </div>
 
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; font-size: 0.72rem; color: #cbd5e1; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 0.6rem;">
-                <span><i data-lucide="check-square" style="width: 12px; height: 12px; vertical-align: middle; color: #c084fc;"></i> ${levels.smp.completedCompCount} / 10 Lomba Selesai</span>
+                <span><i data-lucide="check-square" style="width: 12px; height: 12px; vertical-align: middle; color: #c084fc;"></i> ${levels.smp.completedCompCount} / ${COMPETITIONS.length} Lomba Selesai</span>
                 <button class="btn-action-input-nilai" onclick="window.appRouter.navigate('scoring')">
                   <i data-lucide="edit-3"></i> Rekap SMP
                 </button>
@@ -149,7 +151,7 @@ const DashboardComponent = {
               </div>
 
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; font-size: 0.72rem; color: #cbd5e1; border-top: 1px dashed rgba(255, 255, 255, 0.1); padding-top: 0.6rem;">
-                <span><i data-lucide="check-square" style="width: 12px; height: 12px; vertical-align: middle; color: #10b981;"></i> ${levels.penegak.completedCompCount} / 10 Lomba Selesai</span>
+                <span><i data-lucide="check-square" style="width: 12px; height: 12px; vertical-align: middle; color: #10b981;"></i> ${levels.penegak.completedCompCount} / ${COMPETITIONS.length} Lomba Selesai</span>
                 <button class="btn-action-input-nilai" onclick="window.appRouter.navigate('scoring')">
                   <i data-lucide="edit-3"></i> Rekap Penegak
                 </button>
@@ -157,12 +159,12 @@ const DashboardComponent = {
             </div>
           </div>
 
-          <!-- Breakdown Progress per 10 Mata Lomba Accordion / Table Toggle -->
+          <!-- Breakdown Progress per Mata Lomba Accordion / Table Toggle -->
           <div style="margin-top: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 0.85rem;">
             <details style="background: rgba(0, 0, 0, 0.2); border-radius: 10px; padding: 0.6rem 0.85rem; border: 1px solid rgba(255, 255, 255, 0.05);">
               <summary style="cursor: pointer; font-weight: 800; font-size: 0.82rem; color: var(--neon-cyan); display: flex; align-items: center; gap: 0.4rem;">
                 <i data-lucide="list-checks" style="width: 16px; height: 16px;"></i>
-                Rincian Status Input Nilai per 10 Mata Lomba (SD, SMP, PENEGAK)
+                Rincian Status Input Nilai per ${COMPETITIONS.length} Mata Lomba (SD, SMP, PENEGAK)
               </summary>
               <div class="table-container" style="margin-top: 0.75rem;">
                 <table class="admin-table">

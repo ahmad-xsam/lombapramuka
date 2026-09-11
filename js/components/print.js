@@ -70,7 +70,7 @@ const PrintComponent = {
         </label>
         <select class="form-control" style="max-width: 380px;" onchange="PrintComponent.setLomba(this.value)">
           <option value="combined" ${this.currentLomba === 'combined' ? 'selected' : ''}>Materi Gabungan (Juara Umum)</option>
-          <option value="all_comp" ${this.currentLomba === 'all_comp' ? 'selected' : ''}>Seluruh 10 Mata Bidang Lomba</option>
+          <option value="all_comp" ${this.currentLomba === 'all_comp' ? 'selected' : ''}>Seluruh ${COMPETITIONS.length} Mata Bidang Lomba</option>
           ${COMPETITIONS.map(c => `<option value="${c.id}" ${this.currentLomba === c.id ? 'selected' : ''}>${c.name}</option>`).join('')}
         </select>
       </div>
@@ -129,7 +129,7 @@ const PrintComponent = {
       const levelKey = this.currentCategory === 'all' ? 'all' : (this.currentCategory.startsWith('sd_') ? 'sd' : this.currentCategory.startsWith('smp_') ? 'smp' : 'penegak');
       const genderKey = this.currentCategory.includes('_pa') ? 'pa' : this.currentCategory.includes('_pi') ? 'pi' : 'all';
       const list = window.Calculators.getCombinedLeaderboard(
-        ['administrasi', 'banksoal', 'p3k', 'pioneering', 'sandi', 'morse', 'semaphore', 'ketangkasan', 'joged_komando', 'lkbb'],
+        COMPETITIONS.map(c => c.id),
         levelKey,
         genderKey
       );
@@ -302,7 +302,7 @@ const PrintComponent = {
     if (this.currentLomba === 'combined') {
       const levelKey = this.currentCategory === 'all' ? 'all' : (this.currentCategory.startsWith('sd_') ? 'sd' : this.currentCategory.startsWith('smp_') ? 'smp' : 'penegak');
       const genderKey = this.currentCategory.includes('_pa') ? 'pa' : this.currentCategory.includes('_pi') ? 'pi' : 'all';
-      const list = window.Calculators.getCombinedLeaderboard(['administrasi', 'banksoal', 'p3k', 'pioneering', 'sandi', 'morse', 'semaphore', 'ketangkasan', 'joged_komando', 'lkbb'], levelKey, genderKey);
+      const list = window.Calculators.getCombinedLeaderboard(COMPETITIONS.map(c => c.id), levelKey, genderKey);
 
       winnersList = list.slice(0, 6).map(item => ({
         reguId: item.team.id || item.schoolId || '-',

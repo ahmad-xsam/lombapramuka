@@ -5,8 +5,20 @@
    ========================================================================== */
 
 const CombinedComponent = {
-  // Default selected competitions to combine
-  selectedLombaIds: ['administrasi', 'banksoal', 'p3k', 'pioneering', 'sandi', 'morse', 'semaphore', 'ketangkasan', 'joged_komando', 'lkbb'],
+  // Default selected competitions to combine (dynamically populated from window.COMPETITIONS)
+  get selectedLombaIds() {
+    if (!this._selectedLombaIds) {
+      this._selectedLombaIds = COMPETITIONS.map(c => c.id);
+    }
+    // Filter out deleted competitions if any
+    const validIds = COMPETITIONS.map(c => c.id);
+    this._selectedLombaIds = this._selectedLombaIds.filter(id => validIds.includes(id));
+    return this._selectedLombaIds;
+  },
+
+  set selectedLombaIds(val) {
+    this._selectedLombaIds = val;
+  },
 
   // Level Filter Tabs: 'sd', 'smp', 'penegak', 'overall'
   currentLevelTab: 'sd',
