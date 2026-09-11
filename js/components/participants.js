@@ -21,6 +21,9 @@ const ParticipantsComponent = {
           <p class="page-subtitle">Daftar Kontingen Penggalang SD/SMP dan Sangga Penegak yang Terdaftar</p>
         </div>
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button class="btn-outline" style="background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.35); color: #ef4444; font-weight: 700;" onclick="ParticipantsComponent.confirmResetAllData()">
+            <i data-lucide="trash-2" style="width: 14px; height: 14px; vertical-align: middle; margin-right: 4px;"></i> HAPUS SEMUA DATA
+          </button>
           <button class="btn-outline" style="background: rgba(0, 245, 212, 0.08); border-color: rgba(0, 245, 212, 0.3); color: var(--neon-cyan);" onclick="ParticipantsComponent.openExportModal()">
             Export Data Peserta
           </button>
@@ -484,6 +487,79 @@ const ParticipantsComponent = {
     if (confirm('Apakah Anda yakin ingin menghapus peserta ini?')) {
       window.dataStore.deleteTeam(id);
       this.render(document.getElementById('app-main-content'));
+    }
+  },
+
+  confirmResetAllData() {
+    this.closeModal();
+
+    const totalTeams = (window.dataStore.teams || []).length;
+    const modalHTML = `
+      <div class="modal-overlay open" id="reset-data-modal" onclick="if(event.target === this) ParticipantsComponent.closeResetModal()">
+        <div class="modal-container" style="max-width: 480px;">
+          <div class="modal-header" style="border-bottom: 1px solid rgba(239, 68, 68, 0.4);">
+            <div>
+              <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem; color: #ef4444;">
+                <i data-lucide="alert-triangle" style="color: #ef4444;"></i> PERINGATAN! HAPUS SEMUA DATA
+              </h3>
+              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.15rem;">Tindakan ini tidak dapat diurungkan (permanen)</p>
+            </div>
+            <button class="btn-outline" type="button" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;" onclick="ParticipantsComponent.closeResetModal()">✕</button>
+          </div>
+
+          <div style="padding: 1.25rem 0;">
+            <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
+              <p style="color: #f87171; font-weight: 700; margin: 0 0 0.5rem 0; font-size: 0.88rem;">
+                ⚠️ Anda akan menghapus <strong>${totalTeams} data peserta regu/sangga</strong> beserta seluruh data nilai yang terkait.
+              </p>
+              <ul style="color: #94a3b8; font-size: 0.78rem; margin: 0; padding-left: 1.25rem; line-height: 1.7;">
+                <li>Semua data regu/sangga akan terhapus</li>
+                <li>Semua nilai rekap lomba akan terhapus</li>
+                <li>Data akan kembali ke kondisi awal (data seed)</li>
+                <li>Tindakan ini TIDAK bisa dibatalkan</li>
+              </ul>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="color: #fff; font-weight: 700; font-size: 0.82rem;">Ketik <strong style="color: #ef4444;">HAPUS SEMUA</strong> untuk konfirmasi:</label>
+              <input type="text" id="reset-confirm-input" class="form-control" placeholder="Ketik: HAPUS SEMUA" style="border-color: rgba(239, 68, 68, 0.4); margin-top: 0.4rem; font-family: monospace; font-weight: 700;"/>
+            </div>
+          </div>
+
+          <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+            <button type="button" class="btn-outline" onclick="ParticipantsComponent.closeResetModal()">Batal</button>
+            <button type="button" id="btn-confirm-reset" style="background: linear-gradient(135deg, #dc2626, #991b1b); color: #fff; font-weight: 900; border: none; padding: 0.55rem 1.2rem; border-radius: 999px; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;" onclick="ParticipantsComponent.resetAllData()">
+              <i data-lucide="trash-2" style="width: 15px; height: 15px;"></i> Ya, Hapus Semua Data
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    lucide.createIcons();
+  },
+
+  closeResetModal() {
+    const el = document.getElementById('reset-data-modal');
+    if (el) el.remove();
+  },
+
+  resetAllData() {
+    const inputVal = (document.getElementById('reset-confirm-input')?.value || '').trim();
+    if (inputVal !== 'HAPUS SEMUA') {
+      alert('❌ Konfirmasi tidak sesuai! Ketik tepat: HAPUS SEMUA');
+      return;
+    }
+
+    window.dataStore.resetData();
+    this.closeResetModal();
+    this.render(document.getElementById('app-main-content'));
+
+    if (window.SecurityEngine) {
+      window.SecurityEngine.showSecurityToast('🗑️ Semua data peserta & nilai telah direset ke kondisi awal.');
+    } else {
+      alert('✅ Data berhasil direset ke kondisi awal!');
     }
   }
 };
