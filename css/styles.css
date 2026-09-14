@@ -2076,6 +2076,661 @@ button, input, select, textarea {
   margin-bottom: 1rem;
 }
 
+/* ==========================================================================
+   CRIMSON HERO LANDING PAGE STYLES (COLLIDER GAMING/AGENCY STYLE)
+   ========================================================================== */
+
+.crimson-landing-wrapper {
+  background-color: #100004;
+  color: #ffffff;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.crimson-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 3rem;
+  z-index: 100;
+}
+
+.crimson-brand-logo {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.crimson-brand-logo .brand-text-accent {
+  background: linear-gradient(135deg, #ffffff 0%, #ff4d6d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+  filter: drop-shadow(0 0 12px rgba(230, 0, 46, 0.6));
+}
+
+.crimson-nav-menu {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.crimson-nav-menu a {
+  color: #e2e8f0;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: color 0.2s;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.crimson-nav-menu a:hover,
+.crimson-nav-menu a.active {
+  color: #ff3355;
+  text-shadow: 0 0 10px rgba(255, 51, 85, 0.5);
+}
+
+.btn-crimson-talk {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 0.65rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.btn-crimson-talk:hover {
+  background: #ffffff;
+  color: #a8001d;
+  border-color: #ffffff;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Crimson Hero Scene */
+.crimson-hero-scene {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8rem 3rem 4rem 3rem;
+  background: radial-gradient(circle at 75% 30%, #e6002e 0%, #800018 40%, #100004 90%);
+  overflow: hidden;
+}
+
+.crimson-ember-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hero-bg-emblem-glow {
+  position: absolute;
+  right: 5%;
+  top: 15%;
+  width: 550px;
+  height: 550px;
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 3;
+  animation: emblemPulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes emblemPulse {
+  0% { transform: scale(1) rotate(0deg); opacity: 0.2; }
+  100% { transform: scale(1.08) rotate(5deg); opacity: 0.35; }
+}
+
+.crimson-hero-content {
+  position: relative;
+  z-index: 10;
+  max-width: 900px;
+}
+
+.crimson-tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #ffb3c1;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.crimson-giant-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(3.2rem, 7.5vw, 6.2rem);
+  font-weight: 900;
+  line-height: 0.94;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  margin-bottom: 1.5rem;
+}
+
+.crimson-hero-desc {
+  font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+  color: #f1f5f9;
+  max-width: 620px;
+  line-height: 1.6;
+  margin-bottom: 2.25rem;
+  font-weight: 400;
+}
+
+.crimson-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 3.5rem;
+}
+
+.btn-crimson-work {
+  background: #ffffff;
+  color: #0d0822;
+  border: none;
+  padding: 0.85rem 2rem;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.35);
+  transition: all 0.25s ease;
+  letter-spacing: 0.05em;
+}
+
+.btn-crimson-work:hover {
+  background: #ff3355;
+  color: #ffffff;
+  box-shadow: 0 12px 35px rgba(255, 51, 85, 0.6);
+  transform: translateY(-3px);
+}
+
+.award-wreath-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.65rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(10px);
+}
+
+/* Stats Row */
+.crimson-stats-row {
+  display: flex;
+  gap: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  max-width: 650px;
+}
+
+.stat-num {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #ffffff;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  text-shadow: 0 0 15px rgba(255, 51, 85, 0.6);
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.crimson-reflective-floor {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(180deg, transparent 0%, #100004 100%);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Crimson About Card & Grid */
+.crimson-about-section {
+  max-width: 1280px;
+  margin: 3rem auto 1rem auto;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 20;
+}
+
+.crimson-about-card {
+  background: rgba(20, 4, 10, 0.9);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(230, 0, 46, 0.3);
+  border-radius: 24px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+
+.about-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(230, 0, 46, 0.15);
+  color: #ff4d6d;
+  border: 1px solid rgba(230, 0, 46, 0.4);
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 1.25rem;
+}
+
+.about-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  font-weight: 900;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.about-desc {
+  color: #cbd5e1;
+  font-size: clamp(0.88rem, 1.1vw, 1.02rem);
+  max-width: 900px;
+  margin: 0 auto 2.5rem auto;
+  line-height: 1.7;
+  text-align: justify;
+}
+
+.crimson-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 1.5rem;
+  transition: all 0.25s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(230, 0, 46, 0.5);
+  box-shadow: 0 10px 25px rgba(230, 0, 46, 0.2);
+}
+
+.feature-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.icon-cyan { background: rgba(0, 245, 212, 0.15); color: #00f5d4; }
+.icon-purple { background: rgba(192, 132, 252, 0.15); color: #c084fc; }
+.icon-yellow { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+.icon-red { background: rgba(230, 0, 46, 0.15); color: #ff3355; }
+
+.feature-card h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.4rem;
+}
+
+.feature-card p {
+  font-size: 0.84rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+/* Crimson Scoreboard Section */
+.crimson-scoreboard-section {
+  max-width: 1380px;
+  margin: 3rem auto 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+  position: relative;
+  z-index: 20;
+}
+
+.scoreboard-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 900;
+  margin-bottom: 0.35rem;
+  color: #ffffff;
+}
+
+.scoreboard-subtitle {
+  color: #94a3b8;
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  margin-bottom: 1.75rem;
+}
+
+.crimson-sub-tabs {
+  margin: 1.25rem 0 2rem 0;
+  justify-content: center;
+  background: rgba(20, 4, 10, 0.9);
+  padding: 0.75rem;
+  border-radius: 20px;
+  border: 1px solid rgba(230, 0, 46, 0.3);
+  gap: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.crimson-footer {
+  margin-top: 4rem;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 0, 4, 0.95);
+  position: relative;
+  z-index: 20;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.footer-brand {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.1em;
+}
+
+.footer-text {
+  font-size: clamp(0.82rem, 1.1vw, 0.92rem);
+  color: #cbd5e1;
+  max-width: 950px;
+  line-height: 1.6;
+}
+
+.footer-copy {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* ==========================================================================
+   ANDROID MOBILE APP VIEW RESPONSIVE STYLES (SCREEN WIDTH <= 768px)
+   ========================================================================== */
+
+/* Hide mobile dock on Widescreen Monitors */
+.mobile-android-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* 1. App Container Adjustments */
+  .app-container {
+    flex-direction: column;
+    padding-bottom: 70px !important;
+  }
+
+  /* 2. Hide Desktop Sidebar & Adjust Header */
+  .admin-layout .sidebar, aside.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+  }
+
+  .admin-layout .sidebar.mobile-open, aside.sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: none;
+  }
+
+  .sidebar-backdrop.show {
+    display: block;
+  }
+
+  /* Header adjustments for Android Mobile */
+  .creator-header {
+    height: 60px;
+    padding: 0 1rem;
+  }
+
+  .mobile-toggle-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-creator);
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .cybet-search-bar {
+    max-width: 170px;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .creator-user-profile {
+    padding: 0.3rem;
+  }
+
+  .creator-user-profile > div:last-child {
+    display: none;
+  }
+
+  /* 3. Main Content Spacing for Android */
+  .content-body {
+    padding: 1rem 0.85rem !important;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .page-title {
+    font-size: 1.35rem;
+  }
+
+  /* 4. Native Android Bottom Dock Navigation Bar */
+  .mobile-android-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    background: #090d16;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 9999;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 0.25rem;
+    box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0.35rem 0.6rem;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    flex: 1;
+  }
+
+  .mobile-nav-item i {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-nav-item.active {
+    color: #00f5d4;
+    font-weight: 800;
+  }
+
+  .mobile-nav-item.active i {
+    transform: translateY(-2px) scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(0, 245, 212, 0.6));
+  }
+
+  /* 5. Mobile Dashboard & Table Adjustments */
+  .creator-dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .creator-metrics-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .card-panel {
+    padding: 1.15rem;
+    border-radius: 14px;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .sub-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0.4rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sub-tab-btn {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.75rem;
+  }
+
+  /* Touch Scrollable Data Tables */
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+  }
+
+  .admin-table, .custom-table {
+    min-width: 650px;
+  }
+
+  /* Crimson Landing Page Mobile Enhancements */
+  .crimson-header {
+    padding: 1rem 1.25rem;
+  }
+
+  .crimson-nav-menu {
+    display: none; /* Hide top menu links on mobile landing, use bottom dock or hero CTA */
+  }
+
+  .crimson-hero-scene {
+    padding: 6rem 1.25rem 3rem 1.25rem;
+    min-height: 90vh;
+  }
+
+  .crimson-giant-title {
+    font-size: 2.8rem;
+    line-height: 0.98;
+  }
+
+  .crimson-stats-row {
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-top: 1.5rem;
+  }
+
+  .crimson-about-card {
+    padding: 1.75rem 1.15rem;
+  }
+}
+
+
 
 
 

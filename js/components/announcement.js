@@ -64,7 +64,7 @@ const AnnouncementComponent = {
         </div>
         <div class="creator-metric-card">
           <div class="creator-metric-label">Total Mata Bidang Lomba</div>
-          <div class="creator-metric-val" style="color: #c084fc; font-size: 1.5rem;">10 Bidang Lomba</div>
+          <div class="creator-metric-val" style="color: #c084fc; font-size: 1.5rem;">${COMPETITIONS.length} Bidang Lomba</div>
         </div>
       </div>
 
@@ -166,7 +166,7 @@ const AnnouncementComponent = {
     const genderKey = catFilter.includes('_pa') ? 'pa' : catFilter.includes('_pi') ? 'pi' : 'all';
 
     const list = window.Calculators.getCombinedLeaderboard(
-      ['administrasi', 'banksoal', 'p3k', 'pioneering', 'sandi', 'morse', 'semaphore', 'ketangkasan', 'joged_komando', 'lkbb'],
+      COMPETITIONS.map(c => c.id),
       levelKey,
       genderKey
     );
@@ -327,7 +327,7 @@ const AnnouncementComponent = {
     const levelKey = activeCat === 'all' ? 'all' : (activeCat.startsWith('sd_') ? 'sd' : activeCat.startsWith('smp_') ? 'smp' : 'penegak');
     const genderKey = activeCat.includes('_pa') ? 'pa' : activeCat.includes('_pi') ? 'pi' : 'all';
     const combinedList = window.Calculators.getCombinedLeaderboard(
-      ['administrasi', 'banksoal', 'p3k', 'pioneering', 'sandi', 'morse', 'semaphore', 'ketangkasan', 'joged_komando', 'lkbb'],
+      COMPETITIONS.map(c => c.id),
       levelKey,
       genderKey
     );

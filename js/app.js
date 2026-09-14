@@ -38,12 +38,22 @@ class AppRouter {
     window.currentRoute = route;
     this.closeMobileSidebar();
 
+    // Update active mobile dock button state
+    document.querySelectorAll('.mobile-nav-item').forEach(btn => {
+      const mobRoute = btn.dataset.mobileRoute;
+      if (mobRoute === route || (mobRoute === 'login' && route === 'dashboard')) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
     if (route === 'public') {
       // Standalone Full-Width Voidborn Public Landing Page
       if (this.sidebar) this.sidebar.style.display = 'none';
       if (this.topHeader) this.topHeader.style.display = 'none';
       if (this.appContainer) this.appContainer.classList.remove('admin-layout');
-      document.body.style.backgroundColor = '#0a0814';
+      document.body.style.backgroundColor = '#100004';
       document.body.style.color = '#ffffff';
 
       if (this.mainContent) {
@@ -55,7 +65,7 @@ class AppRouter {
       if (this.sidebar) this.sidebar.style.display = 'none';
       if (this.topHeader) this.topHeader.style.display = 'none';
       if (this.appContainer) this.appContainer.classList.remove('admin-layout');
-      document.body.style.backgroundColor = '#0a0814';
+      document.body.style.backgroundColor = '#100004';
       document.body.style.color = '#ffffff';
 
       if (this.mainContent) {
@@ -68,7 +78,7 @@ class AppRouter {
       if (this.sidebar) this.sidebar.style.display = 'none';
       if (this.topHeader) this.topHeader.style.display = 'none';
       if (this.appContainer) this.appContainer.classList.remove('admin-layout');
-      document.body.style.backgroundColor = '#0a0814';
+      document.body.style.backgroundColor = '#100004';
       document.body.style.color = '#ffffff';
 
       if (this.mainContent) {

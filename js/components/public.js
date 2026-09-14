@@ -1,8 +1,10 @@
 /* ==========================================================================
-   SiMika - Parallax Constellation Public Landing Page Component
-   - Interactive Star Constellation Particles (Titik-Titik & Rasi Garis Bintang)
-   - Moon Removed
-   - Proportional Fluid Layout for Public Landing & Admin Dashboard
+   SiMika - Crimson Hero Landing Page Component (Collider Gaming/Agency Style)
+   - Heavy Bold Typography (CREATE. IMPACT. DOMINATE.)
+   - Vivid Crimson Red Gradient Theme with Glowing Embers & Floor Reflections
+   - Top Header Nav with MASUK ADMIN Button
+   - Stats Row (50+ Regu, 100% Rekap Realtime, 10+ Kategori)
+   - Dynamic Competition Synchronization for Live Scoreboard
    ========================================================================== */
 
 const PublicComponent = {
@@ -44,141 +46,153 @@ const PublicComponent = {
     const listPi = window.Calculators.getCombinedLeaderboard(allCompIds, levelKey, 'pi');
 
     container.innerHTML = `
-      <div class="moonlight-landing-wrapper">
-        <!-- Moonlight Header Navigation -->
-        <header class="moonlight-header">
-          <a href="#" class="moonlight-logo" onclick="window.appRouter.navigate('public')">
-            <img src="assets/simika-logo.png" alt="SiMika Logo" class="moonlight-header-logo-img">
-          </a>
+      <div class="crimson-landing-wrapper">
+        <!-- Collider-Style Top Header Bar -->
+        <header class="crimson-header">
+          <div class="crimson-brand-logo" onclick="window.appRouter.navigate('public')">
+            <span class="brand-text-accent">SIMIKA</span>
+          </div>
 
-          <ul class="moonlight-nav-menu">
+          <ul class="crimson-nav-menu">
             <li><a href="#hero-scene" class="active">Beranda</a></li>
-            <li><a href="#about-simika">Tentang SiMika</a></li>
-            <li><a href="javascript:void(0)" onclick="window.appRouter.navigate('draw')" style="color: var(--neon-cyan); font-weight: 800;">🎲 DAFTAR TAMPIL LKBB</a></li>
+            <li><a href="#about-simika">Tentang</a></li>
+            <li><a href="#live-scoreboard">Rekap Live</a></li>
+            <li><a href="javascript:void(0)" onclick="window.appRouter.navigate('draw')">Daftar Tampil</a></li>
           </ul>
 
-          <button class="btn-moonlight-admin" onclick="window.appRouter.navigate('login')">
-            <i data-lucide="key" style="width: 14px; height: 14px;"></i> Masuk Admin
+          <button class="btn-crimson-talk" onclick="window.appRouter.navigate('login')">
+            MASUK ADMIN ↗
           </button>
         </header>
 
-        <!-- Parallax Hero Scene -->
-        <section class="moonlight-hero-scene" id="hero-scene">
-          <!-- Starry Night Background & Twinkling Stars -->
-          <div class="stars-layer"></div>
+        <!-- Collider Crimson Hero Scene -->
+        <section class="crimson-hero-scene" id="hero-scene">
+          <!-- Ambient Radial Background Lighting & Sparks Canvas -->
+          <canvas id="crimson-ember-canvas" class="crimson-ember-canvas"></canvas>
 
-          <!-- Interactive Constellation Canvas (Titik-Titik & Rasi Garis Bintang) -->
-          <canvas id="constellation-canvas" class="constellation-canvas"></canvas>
+          <!-- Large Background Mascot Emblem Motif -->
+          <div class="hero-bg-emblem-glow">
+            <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M150 20 L270 260 L200 260 L150 150 L100 260 L30 260 Z" fill="#ffffff" fill-opacity="0.12"/>
+            </svg>
+          </div>
 
-          <!-- Background Mountains Silhouettes -->
-          <svg class="moonlight-bg-mountains" viewBox="0 0 1440 600" preserveAspectRatio="none">
-            <path fill="#2e2759" d="M0,420 L150,290 L320,380 L520,210 L720,360 L920,180 L1150,350 L1350,230 L1440,290 L1440,600 L0,600 Z"/>
-            <path fill="#3b326e" opacity="0.65" d="M0,480 L200,360 L400,440 L600,280 L800,400 L1020,260 L1280,410 L1440,320 L1440,600 L0,600 Z"/>
-          </svg>
+          <!-- Hero Main Content Grid -->
+          <div class="crimson-hero-content">
+            <div class="crimson-tagline">
+              <span class="flash-icon">⚡</span> COMPETITION MANAGEMENT SYSTEM
+            </div>
 
-          <!-- Giant Parallax Hero Content (Layered BEHIND foreground rocks) -->
-          <div class="moonlight-hero-content">
-            <div class="moonlight-tagline">SISTEM MANAGEMENT REKAPITULASI LOMBA PRAMUKA</div>
-            <img src="assets/simika-logo-hero.png" alt="SiMika Logo" class="moonlight-hero-logo-img">
-            <p class="moonlight-subtitle">Sistem Rekapitulasi Lomba Pramuka Online Real-Time</p>
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
-              <button class="btn-moonlight-explore" style="background: linear-gradient(135deg, #00f5d4, #06b6d4); color: #070a12; font-weight: 900;" onclick="window.appRouter.navigate('draw')">
-                🎲 DAFTAR TAMPIL LKBB
+            <h1 class="crimson-giant-title">
+              CREATE.<br>
+              IMPACT.<br>
+              DOMINATE.
+            </h1>
+
+            <p class="crimson-hero-desc">
+              Sistem Manajemen & Rekapitulasi Skor Lomba Pramuka Real-Time yang cepat, transparan, dan terpercaya. Akurasi nilai 100% dari juri hingga papan skor utama.
+            </p>
+
+            <div class="crimson-hero-actions">
+              <button class="btn-crimson-work" onclick="document.getElementById('live-scoreboard').scrollIntoView({behavior: 'smooth'})">
+                LIHAT REKAP LIVE ↗
               </button>
-              <button class="btn-moonlight-explore" onclick="document.getElementById('live-scoreboard').scrollIntoView({behavior: 'smooth'})">
-                LIHAT REKAP REALTIME
-              </button>
+
+              <div class="award-wreath-badge">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                  <path d="M7.5 12a4.5 4.5 0 0 1 4.5-4.5"/>
+                  <path d="M16.5 12a4.5 4.5 0 0 0-4.5-4.5"/>
+                  <path d="M6 19.5a9 9 0 0 1-3-7.5 9 9 0 0 1 9-9 9 9 0 0 1 9 9 9 9 0 0 1-3 7.5"/>
+                </svg>
+                <span>OFFICIAL PRAMUKA SCORING ENGINE</span>
+              </div>
+            </div>
+
+            <!-- Stats Bar at Hero Bottom -->
+            <div class="crimson-stats-row">
+              <div class="stat-item">
+                <div class="stat-num">50+</div>
+                <div class="stat-label">REGU PESERTA</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-num">100%</div>
+                <div class="stat-label">REKAP REALTIME</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-num">${COMPETITIONS.length}+</div>
+                <div class="stat-label">KATEGORI LOMBA</div>
+              </div>
             </div>
           </div>
 
-          <!-- Foreground Rocks & Cliffs Silhouettes (Layered IN FRONT of text) -->
-          <div class="moonlight-foreground-cliffs">
-            <!-- Left Cliff Group -->
-            <svg class="cliff-svg cliff-left" viewBox="0 0 550 750" preserveAspectRatio="none">
-              <path fill="#1c1439" d="M0,0 L200,0 L280,140 L160,260 L320,440 L180,600 L360,750 L0,750 Z"/>
-              <path fill="#150e2a" d="M0,0 L140,0 L210,120 L100,240 L250,420 L120,580 L280,750 L0,750 Z"/>
-              <path fill="#281e4d" opacity="0.7" d="M140,0 L210,120 L280,140 L160,260 L320,440 L360,750 L280,750 L250,420 L100,240 Z"/>
-              <path fill="#382a69" opacity="0.4" d="M0,100 L100,240 L140,0 Z"/>
-              <path fill="#382a69" opacity="0.4" d="M120,580 L280,750 L180,600 Z"/>
-            </svg>
-
-            <!-- Right Cliff Group -->
-            <svg class="cliff-svg cliff-right" viewBox="0 0 550 750" preserveAspectRatio="none">
-              <path fill="#1c1439" d="M550,0 L350,0 L270,150 L390,280 L230,440 L370,600 L190,750 L550,750 Z"/>
-              <path fill="#150e2a" d="M550,0 L410,0 L340,130 L450,260 L300,420 L430,580 L270,750 L550,750 Z"/>
-              <path fill="#281e4d" opacity="0.7" d="M410,0 L340,130 L270,150 L390,280 L230,440 L190,750 L270,750 L300,420 L450,260 Z"/>
-              <path fill="#382a69" opacity="0.4" d="M550,120 L450,260 L410,0 Z"/>
-              <path fill="#382a69" opacity="0.4" d="M430,580 L270,750 L370,600 Z"/>
-            </svg>
-
-            <!-- Bottom Ground Base Overlay -->
-            <div class="moonlight-ground-overlay"></div>
-          </div>
+          <!-- Glossy Wet Floor Base Reflection Gradient -->
+          <div class="crimson-reflective-floor"></div>
         </section>
 
         <!-- System Explanation Section -->
-        <section style="max-width: 1280px; margin: 3rem auto 1rem auto; padding: 0 1.5rem; text-align: center; position: relative; z-index: 20;" id="about-simika">
-          <div style="background: rgba(18, 12, 36, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(192, 132, 252, 0.25); border-radius: 24px; padding: 2.5rem 2rem; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);">
-            <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0, 245, 212, 0.12); color: var(--neon-cyan); border: 1px solid rgba(0, 245, 212, 0.3); padding: 0.35rem 1rem; border-radius: 999px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.25rem;">
-              <i data-lucide="info" style="width: 15px; height: 15px;"></i> Tentang Sistem SiMika
+        <section class="crimson-about-section" id="about-simika">
+          <div class="crimson-about-card">
+            <div class="about-tag">
+              <i data-lucide="info"></i> Tentang SiMika
             </div>
             
-            <h2 style="font-family: 'Poppins', sans-serif; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 900; margin-bottom: 1rem; color: #ffffff; line-height: 1.2;">
+            <h2 class="about-title">
               Sistem Management Rekapitulasi Lomba Pramuka (SiMika)
             </h2>
             
-            <p style="color: #cbd5e1; font-size: clamp(0.9rem, 1.2vw, 1.05rem); max-width: 920px; margin: 0 auto 2.25rem auto; line-height: 1.7; font-weight: 400; text-align: justify;">
+            <p class="about-desc">
               SiMika adalah platform web terpadu yang dirancang khusus untuk memodernisasi, mengolah, dan menyajikan hasil rekapitulasi nilai perlombaan Pramuka secara transparan, akurat, dan real-time. Dengan sistem ini, panitia dan dewan juri dapat menginput nilai dengan mudah, menghindari kesalahan kalkulasi manual, serta menyajikan live scoreboard langsung yang dapat dipantau oleh peserta dan pembina regu secara terbuka.
             </p>
 
             <!-- Feature Cards Grid -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.25rem; text-align: left;">
-              <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 1.35rem; transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-                <div style="width: 42px; height: 42px; background: rgba(0, 245, 212, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--neon-cyan); margin-bottom: 0.9rem;">
-                  <i data-lucide="zap" style="width: 22px; height: 22px;"></i>
+            <div class="crimson-features-grid">
+              <div class="feature-card">
+                <div class="feature-icon icon-cyan">
+                  <i data-lucide="zap"></i>
                 </div>
-                <h3 style="font-size: 1.05rem; font-weight: 800; color: #ffffff; margin-bottom: 0.4rem;">Rekap Real-Time Instan</h3>
-                <p style="font-size: 0.85rem; color: #94a3b8; line-height: 1.5; text-align: justify;">Perhitungan skor dan perubahan peringkat terjadi secara otomatis saat nilai diinput oleh juri.</p>
+                <h3>Rekap Real-Time Instan</h3>
+                <p>Perhitungan skor dan perubahan peringkat terjadi secara otomatis saat nilai diinput oleh juri.</p>
               </div>
 
-              <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 1.35rem; transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-                <div style="width: 42px; height: 42px; background: rgba(192, 132, 252, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--crystal-purple); margin-bottom: 0.9rem;">
-                  <i data-lucide="layers" style="width: 22px; height: 22px;"></i>
+              <div class="feature-card">
+                <div class="feature-icon icon-purple">
+                  <i data-lucide="layers"></i>
                 </div>
-                <h3 style="font-size: 1.05rem; font-weight: 800; color: #ffffff; margin-bottom: 0.4rem;">Multi-Tingkat & Kategori</h3>
-                <p style="font-size: 0.85rem; color: #94a3b8; line-height: 1.5; text-align: justify;">Mendukung pengelompokan nilai untuk tingkat SD, SMP, hingga Penegak kategori Putra & Putri.</p>
+                <h3>Multi-Tingkat & Kategori</h3>
+                <p>Mendukung pengelompokan nilai untuk tingkat SD, SMP, hingga Penegak kategori Putra & Putri.</p>
               </div>
 
-              <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 1.35rem; transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-                <div style="width: 42px; height: 42px; background: rgba(251, 191, 36, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fbbf24; margin-bottom: 0.9rem;">
-                  <i data-lucide="shield-check" style="width: 22px; height: 22px;"></i>
+              <div class="feature-card">
+                <div class="feature-icon icon-yellow">
+                  <i data-lucide="shield-check"></i>
                 </div>
-                <h3 style="font-size: 1.05rem; font-weight: 800; color: #ffffff; margin-bottom: 0.4rem;">Akurat & Transparan</h3>
-                <p style="font-size: 0.85rem; color: #94a3b8; line-height: 1.5; text-align: justify;">Menyajikan rincian akumulasi nilai per mata lomba dengan objektivitas tinggi dan mudah diaudit.</p>
+                <h3>Akurat & Transparan</h3>
+                <p>Menyajikan rincian akumulasi nilai per mata lomba dengan objektivitas tinggi dan mudah diaudit.</p>
               </div>
 
-              <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 1.35rem; transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-                <div style="width: 42px; height: 42px; background: rgba(239, 68, 68, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #f87171; margin-bottom: 0.9rem;">
-                  <i data-lucide="printer" style="width: 22px; height: 22px;"></i>
+              <div class="feature-card">
+                <div class="feature-icon icon-red">
+                  <i data-lucide="printer"></i>
                 </div>
-                <h3 style="font-size: 1.05rem; font-weight: 800; color: #ffffff; margin-bottom: 0.4rem;">Cetak SK Kejuaraan</h3>
-                <p style="font-size: 0.85rem; color: #94a3b8; line-height: 1.5; text-align: justify;">Memfasilitasi pencetakan Surat Keputusan (SK) Pemenang dan dokumen rekapitulasi resmi.</p>
+                <h3>Cetak SK Kejuaraan</h3>
+                <p>Memfasilitasi pencetakan Surat Keputusan (SK) Pemenang dan dokumen rekapitulasi resmi.</p>
               </div>
             </div>
           </div>
         </section>
 
         <!-- Live Scoreboard Section -->
-        <section style="max-width: 1380px; margin: 2rem auto 0 auto; padding: 0 1.5rem; text-align: center; position: relative; z-index: 20;" id="live-scoreboard">
-          <h2 style="font-family: 'Poppins', sans-serif; font-size: clamp(1.8rem, 3vw, 2.4rem); font-weight: 900; margin-bottom: 0.35rem; color: #ffffff;">
+        <section class="crimson-scoreboard-section" id="live-scoreboard">
+          <h2 class="scoreboard-title">
             PAPAN SKOR REKAPITULASI LIVE
           </h2>
-          <p style="color: #94a3b8; font-size: clamp(0.85rem, 1.2vw, 0.95rem); margin-bottom: 1.75rem;">
+          <p class="scoreboard-subtitle">
             Hasil Perhitungan Akumulasi Nilai Seluruh Lomba Pramuka Real-Time (${categoryTitle})
           </p>
 
-          <!-- All 7 Category Switcher Tabs -->
-          <div class="sub-tabs" style="margin: 1.25rem 0 2rem 0; justify-content: center; background: rgba(18, 12, 36, 0.9); padding: 0.75rem; border-radius: 20px; border: 1px solid rgba(192, 132, 252, 0.3); gap: 0.5rem; display: flex; flex-wrap: wrap;">
+          <!-- Category Switcher Tabs -->
+          <div class="crimson-sub-tabs">
             <button class="sub-tab-btn ${this.activeCategory === 'sd_pa' ? 'active' : ''}" onclick="PublicComponent.switchCategory('sd_pa')">
               🏆 SD PUTRA
             </button>
@@ -206,9 +220,9 @@ const PublicComponent = {
           ${this.activeCategory === 'overall' ? `
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; text-align: left;">
               <!-- Podium Putra -->
-              <div class="card-panel" style="margin-bottom: 0; background: #120c24; border: 1px solid rgba(0, 245, 212, 0.4);">
+              <div class="card-panel" style="margin-bottom: 0; background: #120508; border: 1px solid rgba(230, 0, 46, 0.4);">
                 <div class="card-panel-header">
-                  <h3 class="panel-title" style="color: var(--neon-cyan);">
+                  <h3 class="panel-title" style="color: #ff3355;">
                     <i data-lucide="trophy"></i>
                     Podium Juara Overall PUTRA
                   </h3>
@@ -217,7 +231,7 @@ const PublicComponent = {
               </div>
 
               <!-- Podium Putri -->
-              <div class="card-panel" style="margin-bottom: 0; background: #120c24; border: 1px solid rgba(192, 132, 252, 0.4);">
+              <div class="card-panel" style="margin-bottom: 0; background: #120508; border: 1px solid rgba(192, 132, 252, 0.4);">
                 <div class="card-panel-header">
                   <h3 class="panel-title" style="color: var(--crystal-purple);">
                     <i data-lucide="trophy"></i>
@@ -229,9 +243,9 @@ const PublicComponent = {
             </div>
           ` : `
             <div style="max-width: 650px; margin: 0 auto 2rem auto; text-align: left;">
-              <div class="card-panel" style="margin-bottom: 0; background: #120c24; border: 1px solid rgba(0, 245, 212, 0.4);">
+              <div class="card-panel" style="margin-bottom: 0; background: #120508; border: 1px solid rgba(230, 0, 46, 0.4);">
                 <div class="card-panel-header">
-                  <h3 class="panel-title" style="color: var(--neon-cyan);">
+                  <h3 class="panel-title" style="color: #ff3355;">
                     <i data-lucide="trophy"></i>
                     Podium Juara Top 3 - ${categoryTitle}
                   </h3>
@@ -241,15 +255,15 @@ const PublicComponent = {
             </div>
           `}
 
-          <!-- Main Live Table showing all 10 competitions score breakdown -->
-          <div class="card-panel" style="background: #120c24; border: 1px solid rgba(192, 132, 252, 0.3); text-align: left;">
+          <!-- Main Live Table showing all competition breakdown (including newly added competitions!) -->
+          <div class="card-panel" style="background: #120508; border: 1px solid rgba(230, 0, 46, 0.3); text-align: left;">
             <div class="card-panel-header">
               <h3 class="panel-title">
                 <i data-lucide="award" style="color: #fbbf24;"></i>
-                Hasil Perhitungan Akumulasi Nilai Seluruh Lomba Real-Time (${listMain.length} Kontingen)
+                Hasil Perhitungan Akumulasi Nilai Real-Time (${listMain.length} Kontingen)
               </h3>
               <div style="font-size: 0.8rem; color: #94a3b8;">
-                Kategori: <strong style="color: var(--neon-cyan);">${categoryTitle}</strong>
+                Kategori: <strong style="color: #ff4d6d;">${categoryTitle}</strong>
               </div>
             </div>
 
@@ -261,7 +275,7 @@ const PublicComponent = {
                     <th>Nama Regu / Sangga</th>
                     <th>Pangkalan / Sekolah</th>
                     <th>Kategori</th>
-                    ${COMPETITIONS.map(c => `<th title="${c.name}">${c.name.replace('Lomba ', '')}</th>`).join('')}
+                    ${COMPETITIONS.map(c => `<th title="${c.name}">${c.name.replace(/^Lomba\s+/i, '')}</th>`).join('')}
                     <th>Total Skor Final</th>
                     <th>Keterangan</th>
                   </tr>
@@ -281,7 +295,7 @@ const PublicComponent = {
                         <td>${item.team.pangkalan}</td>
                         <td><span class="badge ${catObj?.badgeClass || 'badge-sd'}">${catObj?.short || item.team.category}</span></td>
                         ${COMPETITIONS.map(c => `<td>${item.breakdown[c.id] || 0}</td>`).join('')}
-                        <td><strong style="color: var(--neon-yellow); font-size: 1.15rem; font-family: 'Poppins', sans-serif;">${item.combinedTotal} Pts</strong></td>
+                        <td><strong style="color: #ffcc00; font-size: 1.15rem; font-family: 'Poppins', sans-serif;">${item.combinedTotal} Pts</strong></td>
                         <td>
                           ${item.isTie ? `
                             <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); font-weight: 700; font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px;">⚡ ${item.displayKet}</span>
@@ -298,16 +312,14 @@ const PublicComponent = {
           </div>
         </section>
 
-        <!-- Moonlight Footer -->
-        <footer style="margin-top: 4rem; padding: 2.25rem 1.5rem; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1); background: rgba(9, 5, 24, 0.92); position: relative; z-index: 20;">
-          <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 0.85rem;">
-            <div style="display: flex; align-items: center; justify-content: center;">
-              <img src="assets/simika-logo.png" alt="SiMika Logo" style="height: 54px; width: auto; max-width: 200px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(0, 245, 212, 0.4));">
-            </div>
-            <p style="font-size: clamp(0.82rem, 1.1vw, 0.92rem); color: #cbd5e1; max-width: 950px; line-height: 1.6; font-weight: 500; text-align: justify;">
-              Sistem ini dibuat untuk mempermudah dalam mencatat rekapitulasi nilai lomba pramuka | dibuat dan dikembangkan oleh : <strong style="color: var(--neon-cyan); font-weight: 800;">Kak Ahmad Samsudin, S.T.</strong>
+        <!-- Crimson Footer -->
+        <footer class="crimson-footer">
+          <div class="footer-container">
+            <div class="footer-brand">SIMIKA</div>
+            <p class="footer-text">
+              Sistem ini dibuat untuk mempermudah dalam mencatat rekapitulasi nilai lomba pramuka | dikembangkan oleh: <strong style="color: #ff4d6d; font-weight: 800;">Kak Ahmad Samsudin, S.T.</strong>
             </p>
-            <div style="font-size: 0.75rem; color: #64748b; margin-top: 0.2rem;">
+            <div class="footer-copy">
               &copy; ${new Date().getFullYear()} SiMika - Sistem Rekapitulasi Lomba Pramuka Online. All Rights Reserved.
             </div>
           </div>
@@ -317,12 +329,12 @@ const PublicComponent = {
 
     lucide.createIcons();
 
-    // Initialize Constellation Star Canvas
-    setTimeout(() => this.initConstellationCanvas(), 50);
+    // Initialize Crimson Spark Particle Canvas
+    setTimeout(() => this.initCrimsonParticles(), 50);
   },
 
-  initConstellationCanvas() {
-    const canvas = document.getElementById('constellation-canvas');
+  initCrimsonParticles() {
+    const canvas = document.getElementById('crimson-ember-canvas');
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
@@ -338,99 +350,48 @@ const PublicComponent = {
       height = canvas.height = heroSec.clientHeight;
     });
 
-    const mouse = { x: null, y: null, maxDist: 140 };
+    const particles = [];
+    const count = 75;
+    const colors = ['#e6002e', '#ff3355', '#ff7788', '#ffffff', '#ffcc00'];
 
-    heroSec.addEventListener('mousemove', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
-    });
-
-    heroSec.addEventListener('mouseleave', () => {
-      mouse.x = null;
-      mouse.y = null;
-    });
-
-    // Create Constellation Star Particles (Titik-Titik Bintang)
-    const starCount = Math.min(Math.floor((width * height) / 10000), 95);
-    const stars = [];
-    const colors = ['#ffffff', '#00f5d4', '#c084fc', '#fbbf24', '#93c5fd'];
-
-    for (let i = 0; i < starCount; i++) {
-      stars.push({
+    for (let i = 0; i < count; i++) {
+      particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.45,
-        vy: (Math.random() - 0.5) * 0.45,
-        radius: Math.random() * 1.6 + 0.9,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.7) * 0.8,
+        radius: Math.random() * 2.2 + 0.8,
         color: colors[Math.floor(Math.random() * colors.length)],
-        alpha: Math.random() * 0.6 + 0.35,
-        pulseSpeed: Math.random() * 0.02 + 0.005
+        alpha: Math.random() * 0.7 + 0.3,
+        pulse: Math.random() * 0.03 + 0.005
       });
     }
 
     const animate = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Draw constellation connecting lines (Rasi Garis Bintang)
-      for (let i = 0; i < stars.length; i++) {
-        for (let j = i + 1; j < stars.length; j++) {
-          const dx = stars[i].x - stars[j].x;
-          const dy = stars[i].y - stars[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
 
-          if (dist < 115) {
-            const lineAlpha = (1 - dist / 115) * 0.35;
-            ctx.beginPath();
-            ctx.moveTo(stars[i].x, stars[i].y);
-            ctx.lineTo(stars[j].x, stars[j].y);
-            ctx.strokeStyle = `rgba(192, 132, 252, ${lineAlpha})`;
-            ctx.lineWidth = 0.85;
-            ctx.stroke();
-          }
-        }
-      }
+        p.x += p.vx;
+        p.y += p.vy;
 
-      // Draw stars and interactive mouse constellation connections
-      for (let i = 0; i < stars.length; i++) {
-        const s = stars[i];
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
 
-        s.x += s.vx;
-        s.y += s.vy;
+        p.alpha += p.pulse;
+        if (p.alpha > 0.95 || p.alpha < 0.2) p.pulse *= -1;
 
-        if (s.x < 0 || s.x > width) s.vx *= -1;
-        if (s.y < 0 || s.y > height) s.vy *= -1;
-
-        s.alpha += s.pulseSpeed;
-        if (s.alpha > 0.95 || s.alpha < 0.25) s.pulseSpeed *= -1;
-
-        // Draw star dot
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
-        ctx.fillStyle = s.color;
-        ctx.globalAlpha = Math.max(0.1, Math.min(1, s.alpha));
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = s.color;
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.max(0.1, Math.min(1, p.alpha));
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = p.color;
         ctx.fill();
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1;
-
-        // Interactive mouse connection line
-        if (mouse.x !== null && mouse.y !== null) {
-          const mdx = s.x - mouse.x;
-          const mdy = s.y - mouse.y;
-          const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-
-          if (mdist < mouse.maxDist) {
-            const mAlpha = (1 - mdist / mouse.maxDist) * 0.6;
-            ctx.beginPath();
-            ctx.moveTo(s.x, s.y);
-            ctx.lineTo(mouse.x, mouse.y);
-            ctx.strokeStyle = `rgba(0, 245, 212, ${mAlpha})`;
-            ctx.lineWidth = 1.1;
-            ctx.stroke();
-          }
-        }
       }
 
       PublicComponent.animationFrameId = requestAnimationFrame(animate);
@@ -446,3 +407,4 @@ const PublicComponent = {
 };
 
 window.PublicComponent = PublicComponent;
+
