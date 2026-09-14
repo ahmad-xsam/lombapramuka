@@ -207,7 +207,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. Initialize PWA Service Worker for 100% Offline Venue Operation
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
-      .then((reg) => console.log('[PWA] Service Worker registered successfully:', reg.scope))
+      .then((reg) => {
+        console.log('[PWA] Service Worker registered successfully:', reg.scope);
+        reg.update();
+      })
       .catch((err) => console.warn('[PWA] Service Worker registration failed:', err));
   }
 

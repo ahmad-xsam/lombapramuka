@@ -1,8 +1,8 @@
 /* ==========================================================================
-   SiMika PWA - Service Worker Engine (Offline-First Venue Caching)
+   SiMika PWA - Service Worker Engine (Network-First with Offline Fallback)
    ========================================================================== */
 
-const CACHE_NAME = 'simika-pwa-v5';
+const CACHE_NAME = 'simika-pwa-v6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -24,31 +24,28 @@ const ASSETS_TO_CACHE = [
   './js/components/combined.js',
   './js/components/announcement.js',
   './js/components/print.js',
-  './js/app.js',
-  'https://unpkg.com/lucide@latest',
-  'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'
+  './js/app.js'
 ];
 
-// Install Event: Pre-cache static assets
+// Install Event: Pre-cache static assets & immediately activate
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[ServiceWorker] Pre-caching SiMika App Shell Assets');
-      return cache.addAll(ASSETS_TO_CACHE).catch(err => {
-        console.warn('[ServiceWorker] Some non-critical assets failed to cache:', err);
-      });
-    }).then(() => self.skipWaiting())
+      console.log('[ServiceWorker v6] Pre-caching fresh assets');
+      return cache.addAll(ASSETS_TO_CACHE).catch(err => console.warn(err));
+    })
   );
 });
 
-// Activate Event: Clean up old caches
+// Activate Event: Delete all old caches and claim clients immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
           if (cache !== CACHE_NAME) {
-            console.log('[ServiceWorker] Removing old cache:', cache);
+            console.log('[ServiceWorker] Deleting old cache:', cache);
             return caches.delete(cache);
           }
         })
@@ -57,41 +54,28 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event: Cache First with Network Fallback Strategy
+// Fetch Event: Network First strategy (Always get latest from server if online, fallback to cache if offline)
 self.addEventListener('fetch', (event) => {
-  // Ignore non-GET requests or browser extension requests
   if (event.request.method !== 'GET' || !event.request.url.startsWith('http')) return;
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Fetch fresh copy in background to update cache (Stale-While-Revalidate)
-        fetch(event.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
-          }
-        }).catch(() => {/* Offline mode - ignore network fail */});
-
-        return cachedResponse;
-      }
-
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
         }
-
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-
         return networkResponse;
-      }).catch(() => {
-        // Return offline fallback if html page requested
-        if (event.request.headers.get('accept')?.includes('text/html')) {
-          return caches.match('./index.html');
-        }
-      });
-    })
+      })
+      .catch(() => {
+        // Offline Fallback from Cache
+        return caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) return cachedResponse;
+          if (event.request.headers.get('accept')?.includes('text/html')) {
+            return caches.match('./index.html');
+          }
+        });
+      })
   );
 });
+
