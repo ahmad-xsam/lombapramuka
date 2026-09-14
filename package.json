@@ -4,6 +4,7 @@
   "description": "SiMika - Sistem Rekapitulasi Lomba Pramuka Online Real-Time dengan MongoDB Atlas",
   "main": "server.js",
   "scripts": {
+    "build": "echo 'Build complete'",
     "start": "node server.js",
     "dev": "node server.js"
   },
