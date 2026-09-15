@@ -114,18 +114,18 @@ const PublicComponent = {
             </div>
 
             <!-- Stats Bar at Hero Bottom -->
-            <div class="crimson-stats-row">
-              <div class="stat-item">
-                <div class="stat-num">50+</div>
-                <div class="stat-label">REGU PESERTA</div>
+            <div class="crimson-stats-row" style="display: flex; justify-content: center; align-items: center; text-align: center; gap: 1.5rem; width: 100%; max-width: 850px; margin: 2.5rem auto 0 auto; flex-wrap: wrap;">
+              <div class="stat-item" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex: 1; min-width: 130px;">
+                <div class="stat-num" style="text-align: center;">50+</div>
+                <div class="stat-label" style="text-align: center;">REGU PESERTA</div>
               </div>
-              <div class="stat-item">
-                <div class="stat-num">100%</div>
-                <div class="stat-label">REKAP REALTIME</div>
+              <div class="stat-item" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex: 1; min-width: 130px;">
+                <div class="stat-num" style="text-align: center;">100%</div>
+                <div class="stat-label" style="text-align: center;">REKAP REALTIME</div>
               </div>
-              <div class="stat-item">
-                <div class="stat-num">${COMPETITIONS.length}+</div>
-                <div class="stat-label">KATEGORI LOMBA</div>
+              <div class="stat-item" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex: 1; min-width: 130px;">
+                <div class="stat-num" style="text-align: center;">${COMPETITIONS.length}+</div>
+                <div class="stat-label" style="text-align: center;">KATEGORI LOMBA</div>
               </div>
             </div>
           </div>

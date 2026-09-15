@@ -27,6 +27,31 @@ class AppRouter {
     });
   }
 
+  navigatePublicSection(sectionId) {
+    if (window.currentRoute !== 'public') {
+      this.navigate('public');
+      setTimeout(() => {
+        const el = document.getElementById(sectionId);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 120);
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Highlight bottom dock item
+    document.querySelectorAll('.mobile-nav-item').forEach(btn => {
+      const mobRoute = btn.dataset.mobileRoute;
+      if ((sectionId === 'hero-scene' && mobRoute === 'public') ||
+          (sectionId === 'about-simika' && mobRoute === 'about') ||
+          (sectionId === 'live-scoreboard' && mobRoute === 'live')) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
   navigate(route, extraParam) {
     // Protected Admin Routes Check (draw is open to public & participants)
     const protectedRoutes = ['dashboard', 'participants', 'scoring', 'ranking', 'combined', 'announcement', 'users', 'print'];
@@ -41,7 +66,9 @@ class AppRouter {
     // Update active mobile dock button state
     document.querySelectorAll('.mobile-nav-item').forEach(btn => {
       const mobRoute = btn.dataset.mobileRoute;
-      if (mobRoute === route || (mobRoute === 'login' && route === 'dashboard')) {
+      if (mobRoute === route || (mobRoute === 'login' && (route === 'dashboard' || route === 'login'))) {
+        btn.classList.add('active');
+      } else if (route === 'public' && mobRoute === 'public') {
         btn.classList.add('active');
       } else {
         btn.classList.remove('active');

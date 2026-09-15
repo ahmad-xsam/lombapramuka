@@ -84,23 +84,23 @@
 
     <!-- Mobile Android Bottom Dock Navigation Bar (Visible only on Mobile Android screens) -->
     <nav class="mobile-android-nav" id="mobile-android-nav">
-      <button class="mobile-nav-item active" data-mobile-route="public" onclick="window.appRouter.navigate('public')">
+      <button class="mobile-nav-item active" data-mobile-route="public" onclick="window.appRouter.navigatePublicSection('hero-scene')">
         <i data-lucide="home"></i>
         <span>Beranda</span>
       </button>
-      <button class="mobile-nav-item" data-mobile-route="participants" onclick="window.appRouter.navigate('participants')">
-        <i data-lucide="users"></i>
-        <span>Peserta</span>
+      <button class="mobile-nav-item" data-mobile-route="about" onclick="window.appRouter.navigatePublicSection('about-simika')">
+        <i data-lucide="info"></i>
+        <span>Tentang</span>
       </button>
-      <button class="mobile-nav-item" data-mobile-route="scoring" onclick="window.appRouter.navigate('scoring')">
-        <i data-lucide="edit-3"></i>
-        <span>Rekap</span>
+      <button class="mobile-nav-item" data-mobile-route="live" onclick="window.appRouter.navigatePublicSection('live-scoreboard')">
+        <i data-lucide="bar-chart-2"></i>
+        <span>Rekap Live</span>
       </button>
-      <button class="mobile-nav-item" data-mobile-route="ranking" onclick="window.appRouter.navigate('ranking')">
-        <i data-lucide="crown"></i>
-        <span>Peringkat</span>
+      <button class="mobile-nav-item" data-mobile-route="draw" onclick="window.appRouter.navigate('draw')">
+        <i data-lucide="list"></i>
+        <span>Daftar Tampil</span>
       </button>
-      <button class="mobile-nav-item" data-mobile-route="login" onclick="window.appRouter.navigate('login')">
+      <button class="mobile-nav-item" data-mobile-route="login" onclick="window.appRouter.navigate(window.dataStore.currentUser ? 'dashboard' : 'login')">
         <i data-lucide="key"></i>
         <span>Admin</span>
       </button>
