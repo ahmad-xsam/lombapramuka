@@ -28,7 +28,7 @@
     <!-- Left Sidebar (Creator Byte Dark Theme - Bahasa Indonesia) -->
     <aside class="sidebar" style="display: none;">
       <div class="creator-brand" style="justify-content: center; padding-bottom: 1.25rem;">
-        <img src="assets/simika-logo.png" alt="SiMika Logo" style="height: 48px; width: auto; max-width: 200px; object-fit: contain; filter: drop-shadow(0 0 12px rgba(0, 245, 212, 0.45)); display: block; margin: 0 auto;">
+        <img class="simika-dynamic-logo" src="assets/simika-logo-dark.png" alt="SiMika Logo" style="height: 48px; width: auto; max-width: 200px; object-fit: contain; filter: drop-shadow(0 0 12px rgba(0, 245, 212, 0.45)); display: block; margin: 0 auto;">
       </div>
 
       <nav class="nav-section">
@@ -123,6 +123,8 @@
         </div>
 
         <div class="header-right-actions">
+          <button class="theme-toggle-btn" onclick="window.ThemeManager.toggleTheme()"></button>
+
           <div id="network-status-badge" class="network-status-badge status-online">
             <span class="status-dot"></span> 🟢 ONLINE
           </div>
@@ -154,6 +156,7 @@
 
   <!-- Component Scripts -->
   <script src="/js/data.js?v=6.1"></script>
+  <script src="/js/utils/theme.js?v=6.1"></script>
   <script src="/js/utils/calculators.js?v=6.1"></script>
   <script src="/js/utils/security.js?v=6.1"></script>
   <script src="/js/utils/validation.js?v=6.1"></script>

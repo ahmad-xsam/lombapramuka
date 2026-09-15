@@ -12,11 +12,11 @@ const AuthComponent = {
           <!-- Left Side: Scout Illustration & Branding Panel -->
           <div class="login-left-illustration" style="padding: 2rem 1.75rem;">
             <div class="login-left-brand" style="display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem;">
-              <img src="assets/simika-logo.png" alt="SiMika Logo" style="height: 38px; width: auto; max-width: 160px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(0, 245, 212, 0.4));">
+              <img class="simika-dynamic-logo" src="assets/simika-logo-dark.png" alt="SiMika Logo" style="height: 38px; width: auto; max-width: 160px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(0, 245, 212, 0.4));">
             </div>
 
             <div class="scout-character-graphic" style="padding: 1rem 0;">
-              <img src="assets/simika-logo.png" alt="SiMika Logo" style="width: 100%; max-width: 230px; height: auto; object-fit: contain; margin: 0 auto 1.2rem auto; filter: drop-shadow(0 0 25px rgba(0, 245, 212, 0.6)); display: block;">
+              <img class="simika-dynamic-logo" src="assets/simika-logo-dark.png" alt="SiMika Logo" style="width: 100%; max-width: 230px; height: auto; object-fit: contain; margin: 0 auto 1.2rem auto; filter: drop-shadow(0 0 25px rgba(0, 245, 212, 0.6)); display: block;">
               <h2 style="color: #ffffff; font-size: clamp(1.15rem, 1.8vw, 1.45rem); font-weight: 900; margin-bottom: 0.4rem; letter-spacing: -0.01em;">PORTAL MASUK ADMIN</h2>
               <p style="color: #cbd5e1; font-size: 0.8rem; max-width: 320px; margin: 0 auto; line-height: 1.5; font-weight: 400;">
                 Selamat datang Tim Rekap & Dewan Juri. Silakan masuk untuk mengelola data peserta, penilaian, dan laporan SK Resmi.
@@ -30,10 +30,11 @@ const AuthComponent = {
 
           <!-- Right Side: Clean Sign-In Form Panel -->
           <div class="login-right-form-panel">
-            <div style="margin-bottom: 1rem;">
+            <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
               <button type="button" class="btn-back-link" onclick="window.appRouter.navigate('public')">
                 <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Kembali ke Halaman Utama
               </button>
+              <button class="theme-toggle-btn" onclick="window.ThemeManager.toggleTheme()"></button>
             </div>
 
             <h2 class="login-form-title">Login Dashboard Admin</h2>
@@ -66,6 +67,10 @@ const AuthComponent = {
     `;
 
     lucide.createIcons();
+
+    if (window.ThemeManager) {
+      window.ThemeManager.applyTheme(window.ThemeManager.currentTheme);
+    }
   },
 
   openLoginModal() {

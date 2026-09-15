@@ -1,8 +1,8 @@
 /* ==========================================================================
    SiMika - Crimson Hero Landing Page Component (Collider Gaming/Agency Style)
-   - Heavy Bold Typography (CREATE. IMPACT. DOMINATE.)
+   - Heavy Bold Typography (TUMBUH. BERKARYA. BERMAKNA.)
    - Vivid Crimson Red Gradient Theme with Glowing Embers & Floor Reflections
-   - Top Header Nav with MASUK ADMIN Button
+   - Top Header Nav with MASUK ADMIN Button & Theme Toggle
    - Stats Row (50+ Regu, 100% Rekap Realtime, 10+ Kategori)
    - Dynamic Competition Synchronization for Live Scoreboard
    ========================================================================== */
@@ -49,7 +49,8 @@ const PublicComponent = {
       <div class="crimson-landing-wrapper">
         <!-- Collider-Style Top Header Bar -->
         <header class="crimson-header">
-          <div class="crimson-brand-logo" onclick="window.appRouter.navigate('public')">
+          <div class="crimson-brand-logo" onclick="window.appRouter.navigate('public')" style="cursor: pointer; display: flex; align-items: center; gap: 10px;">
+            <img class="simika-dynamic-logo" src="assets/simika-logo-dark.png" alt="SiMika Logo" style="height: 38px; width: auto; object-fit: contain;">
             <span class="brand-text-accent">SIMIKA</span>
           </div>
 
@@ -60,9 +61,12 @@ const PublicComponent = {
             <li><a href="javascript:void(0)" onclick="window.appRouter.navigate('draw')">Daftar Tampil</a></li>
           </ul>
 
-          <button class="btn-crimson-talk" onclick="window.appRouter.navigate('login')">
-            MASUK ADMIN ↗
-          </button>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <button class="theme-toggle-btn" onclick="window.ThemeManager.toggleTheme()"></button>
+            <button class="btn-crimson-talk" onclick="window.appRouter.navigate('login')">
+              MASUK ADMIN ↗
+            </button>
+          </div>
         </header>
 
         <!-- Collider Crimson Hero Scene -->
@@ -84,9 +88,9 @@ const PublicComponent = {
             </div>
 
             <h1 class="crimson-giant-title">
-              CREATE.<br>
-              IMPACT.<br>
-              DOMINATE.
+              TUMBUH.<br>
+              BERKARYA.<br>
+              BERMAKNA.
             </h1>
 
             <p class="crimson-hero-desc">
@@ -315,9 +319,13 @@ const PublicComponent = {
         <!-- Crimson Footer -->
         <footer class="crimson-footer">
           <div class="footer-container">
-            <div class="footer-brand">SIMIKA</div>
-            <p class="footer-text">
-              Sistem ini dibuat untuk mempermudah dalam mencatat rekapitulasi nilai lomba pramuka | dikembangkan oleh: <strong style="color: #ff4d6d; font-weight: 800;">Kak Ahmad Samsudin, S.T.</strong>
+            <div class="footer-brand" style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 0.75rem;">
+              <img class="simika-dynamic-logo" src="assets/simika-logo-dark.png" alt="SiMika Logo" style="height: 36px; width: auto; object-fit: contain;">
+              <span>SIMIKA</span>
+            </div>
+            <p class="footer-text" style="font-size: 0.88rem; line-height: 1.6; max-width: 650px; margin: 0 auto 0.75rem auto;">
+              Sistem ini dibuat untuk mempermudah dalam mencatat rekapitulasi nilai lomba pramuka<br>
+              <span style="display: inline-block; margin-top: 4px; font-weight: 800; color: #ff4d6d; letter-spacing: 0.03em;">Develop by : Kak Ahmad Samsudin, S.T.</span>
             </p>
             <div class="footer-copy">
               &copy; ${new Date().getFullYear()} SiMika - Sistem Rekapitulasi Lomba Pramuka Online. All Rights Reserved.
@@ -328,6 +336,10 @@ const PublicComponent = {
     `;
 
     lucide.createIcons();
+
+    if (window.ThemeManager) {
+      window.ThemeManager.applyTheme(window.ThemeManager.currentTheme);
+    }
 
     // Initialize Crimson Spark Particle Canvas
     setTimeout(() => this.initCrimsonParticles(), 50);
