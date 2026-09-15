@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SiMika - MongoDB Atlas Client Helper for Express Backend
+   SiMika - MongoDB Atlas Client Helper for Vercel Serverless & Express Backend
    Connection String: mongodb+srv://bandungpreanger_db_user:lSoI9r4s25T4qRN4@ahmadxsam.n459uq9.mongodb.net/?appName=ahmadxsam
    ========================================================================== */
 
@@ -13,12 +13,20 @@ let cachedDb = null;
 
 async function connectToDatabase() {
   if (cachedClient && cachedDb) {
-    return { client: cachedClient, db: cachedDb };
+    try {
+      await cachedDb.command({ ping: 1 });
+      return { client: cachedClient, db: cachedDb };
+    } catch (e) {
+      console.warn('[MongoDB Connection Stale, reconnecting]:', e.message);
+      cachedClient = null;
+      cachedDb = null;
+    }
   }
 
   const client = new MongoClient(MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    maxPoolSize: 10,
+    serverSelectionTimeoutMS: 8000,
+    socketTimeoutMS: 45000,
   });
 
   await client.connect();
