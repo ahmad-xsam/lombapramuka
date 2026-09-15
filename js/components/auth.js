@@ -12,18 +12,18 @@ const AuthComponent = {
           <!-- Left Side: Scout Illustration & Branding Panel -->
           <div class="login-left-illustration" style="padding: 2rem 1.75rem;">
             <div class="login-left-brand" style="display: flex; align-items: center; justify-content: center; margin-bottom: 0.5rem;">
-              <img class="simika-dynamic-logo" src="assets/simika-logo-dark.png" alt="SiMika Logo" style="height: 38px; width: auto; max-width: 160px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(0, 245, 212, 0.4));">
+              <img class="simika-dynamic-logo" src="assets/simika-logo-dark.png" alt="SiMika Logo" style="height: 38px; width: auto; max-width: 160px; object-fit: contain;">
             </div>
 
             <div class="scout-character-graphic" style="padding: 1rem 0;">
-              <img class="simika-dynamic-logo" src="assets/simika-logo-dark.png" alt="SiMika Logo" style="width: 100%; max-width: 230px; height: auto; object-fit: contain; margin: 0 auto 1.2rem auto; filter: drop-shadow(0 0 25px rgba(0, 245, 212, 0.6)); display: block;">
-              <h2 style="color: #ffffff; font-size: clamp(1.15rem, 1.8vw, 1.45rem); font-weight: 900; margin-bottom: 0.4rem; letter-spacing: -0.01em;">PORTAL MASUK ADMIN</h2>
-              <p style="color: #cbd5e1; font-size: 0.8rem; max-width: 320px; margin: 0 auto; line-height: 1.5; font-weight: 400;">
+              <img class="simika-dynamic-logo" src="assets/simika-logo-dark.png" alt="SiMika Logo" style="width: 100%; max-width: 230px; height: auto; object-fit: contain; margin: 0 auto 1.2rem auto; display: block;">
+              <h2 style="font-size: clamp(1.15rem, 1.8vw, 1.45rem); font-weight: 900; margin-bottom: 0.4rem; letter-spacing: -0.01em;">PORTAL MASUK ADMIN</h2>
+              <p style="font-size: 0.8rem; max-width: 320px; margin: 0 auto; line-height: 1.5; font-weight: 400;">
                 Selamat datang Tim Rekap & Dewan Juri. Silakan masuk untuk mengelola data peserta, penilaian, dan laporan SK Resmi.
               </p>
             </div>
 
-            <div style="color: #94a3b8; font-size: 0.72rem; text-align: center; font-weight: 700; letter-spacing: 0.05em;">
+            <div style="font-size: 0.72rem; text-align: center; font-weight: 700; letter-spacing: 0.05em; opacity: 0.7;">
               © SIMIKA SCOUT SCORING DASHBOARD 2026
             </div>
           </div>
@@ -38,20 +38,20 @@ const AuthComponent = {
             </div>
 
             <h2 class="login-form-title">Login Dashboard Admin</h2>
-            <p style="color: #94a3b8; font-size: 0.78rem; margin-bottom: 1.15rem;">Silakan isi kredensial akun admin Anda:</p>
+            <p style="font-size: 0.78rem; margin-bottom: 1.15rem; opacity: 0.8;">Silakan isi kredensial akun admin Anda:</p>
 
             <form onsubmit="window.AuthComponent.handleLogin(event)">
               <div id="login-error-alert" style="display: none;" class="login-alert-danger"></div>
 
               <div class="login-input-box" style="margin-bottom: 0.95rem;">
-                <label style="color: #cbd5e1; font-weight: 800; font-size: 0.76rem; display: block; margin-bottom: 0.35rem;">Username</label>
+                <label style="font-weight: 800; font-size: 0.76rem; display: block; margin-bottom: 0.35rem;">Username</label>
                 <div>
                   <input type="text" id="login-username" class="form-control" required autofocus style="font-size: 0.78rem;" />
                 </div>
               </div>
 
               <div class="login-input-box" style="margin-bottom: 1.25rem;">
-                <label style="color: #cbd5e1; font-weight: 800; font-size: 0.76rem; display: block; margin-bottom: 0.35rem;">Password</label>
+                <label style="font-weight: 800; font-size: 0.76rem; display: block; margin-bottom: 0.35rem;">Password</label>
                 <div>
                   <input type="password" id="login-password" class="form-control" placeholder="••••••••" required style="font-size: 0.78rem;" />
                 </div>

@@ -3146,6 +3146,97 @@ body.theme-light .footer-copy {
   color: #64748b !important;
 }
 
+/* ==========================================================================
+   BULLETPROOF LIGHT MODE OVERRIDES: FIX ALL REMAINING WHITE TEXT & BLACK SHADOWS
+   ========================================================================== */
+body.theme-light,
+body.theme-light #app,
+body.theme-light .admin-layout,
+body.theme-light .creator-main-body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Force dark text for all text elements that had inline color: #fff or #ffffff */
+body.theme-light strong,
+body.theme-light b,
+body.theme-light td strong,
+body.theme-light th,
+body.theme-light td,
+body.theme-light h1,
+body.theme-light h2,
+body.theme-light h3,
+body.theme-light h4,
+body.theme-light h5,
+body.theme-light h6,
+body.theme-light label,
+body.theme-light .modal-title,
+body.theme-light .creator-metric-val,
+body.theme-light .stage-school-name,
+body.theme-light [style*="color: #fff"],
+body.theme-light [style*="color: #ffffff"],
+body.theme-light [style*="color:#fff"],
+body.theme-light [style*="color:#ffffff"] {
+  color: #0f172a !important;
+}
+
+/* Sub-text and captions in Light Mode */
+body.theme-light [style*="color: #94a3b8"],
+body.theme-light [style*="color: #cbd5e1"],
+body.theme-light [style*="color:#94a3b8"],
+body.theme-light [style*="color:#cbd5e1"],
+body.theme-light .text-muted {
+  color: #475569 !important;
+}
+
+/* Fix shadows: remove dark/black shadows and dark filters in light mode */
+body.theme-light * {
+  box-shadow: none;
+  text-shadow: none;
+}
+
+/* Restore clean, soft light-mode shadows where appropriate */
+body.theme-light .card-panel,
+body.theme-light .crimson-about-card,
+body.theme-light .stat-item,
+body.theme-light .split-login-card,
+body.theme-light .modal-container,
+body.theme-light .level-progress-card {
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08) !important;
+}
+
+body.theme-light .btn-yellow-pill,
+body.theme-light .btn-crimson-talk,
+body.theme-light .btn-crimson-work,
+body.theme-light .sub-tab-btn.active,
+body.theme-light .filter-tab-btn.active {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #d90429 0%, #b7094c 100%) !important;
+  box-shadow: 0 4px 14px rgba(217, 4, 41, 0.3) !important;
+}
+
+/* Image logo filters in Light mode: remove neon drop-shadows */
+body.theme-light img.simika-dynamic-logo,
+body.theme-light img[alt="SiMika Logo"] {
+  filter: drop-shadow(0 2px 6px rgba(217, 4, 41, 0.2)) !important;
+}
+
+/* SIMIKA Brand Text in Light mode */
+body.theme-light .brand-text-accent {
+  color: #d90429 !important;
+  background: linear-gradient(135deg, #d90429 0%, #b7094c 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 2px 8px rgba(217, 4, 41, 0.25)) !important;
+}
+
+/* Tagline "TUMBUH. BERKARYA. BERMAKNA." Red Text */
+body.theme-light .brand-red-text {
+  color: #d90429 !important;
+  text-shadow: none !important;
+}
+
 
 
 
