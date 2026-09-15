@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SiMika - MongoDB Atlas Client Helper for Vercel & Express Backend
+   SiMika - MongoDB Atlas Client Helper for Express Backend
    Connection String: mongodb+srv://bandungpreanger_db_user:lSoI9r4s25T4qRN4@ahmadxsam.n459uq9.mongodb.net/?appName=ahmadxsam
    ========================================================================== */
 

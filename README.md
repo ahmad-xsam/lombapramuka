@@ -18,12 +18,6 @@ SiMika adalah platform web terpadu yang dirancang khusus untuk memodernisasi, me
   - PWA Service Worker (v6 Network-First) untuk keandalan venue offline.
   - Sinkronisasi otomatis ke MongoDB Atlas.
 
-## 🚀 Panduan Deployment Vercel
-
-Aplikasi ini sudah dikonfigurasi untuk **Zero-Config Deployment** di Vercel:
-- **Repository**: `https://github.com/ahmad-xsam/simika.git`
-- **Vercel Team/Project**: `ahmadsamsudin27-6085s-projects`
-- **API Serverless Functions**: Otomatis terdeteksi pada folder `/api/*.js`.
-
 ---
 &copy; SiMika - Dikembangkan oleh Kak Ahmad Samsudin, S.T.
+
