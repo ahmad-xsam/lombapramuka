@@ -54,8 +54,8 @@ const ScoringComponent = {
           </div>
 
           <!-- Lock / Unlock Toggle Button -->
-          <button type="button" class="btn-lock-toggle ${isLocked ? 'locked' : 'unlocked'}" onclick="ScoringComponent.toggleLock()" style="padding: 0.35rem 0.85rem; font-size: 0.76rem; border-radius: 999px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s;" title="${isLocked ? 'Status Terkunci: Tombol hapus disembunyikan' : 'Status Terbuka: Tombol hapus aktif'}">
-            ${isLocked ? '🔒 DAFTAR LOMBA TERKUNCI' : '🔓 KUNCI TERBUKA (BISA HAPUS LOMBA)'}
+          <button type="button" id="btn-toggle-lomba-lock" class="btn-lock-toggle ${isLocked ? 'locked' : 'unlocked'}" onclick="window.ScoringComponent.toggleLock(event)" style="padding: 0.45rem 1rem; font-size: 0.78rem; border-radius: 999px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; position: relative; z-index: 10; user-select: none;" title="${isLocked ? 'Status Terkunci: Klik untuk membuka kunci hapus lomba' : 'Status Terbuka: Klik untuk mengunci kembali'}">
+            ${isLocked ? '🔒 DAFTAR LOMBA TERKUNCI (KLIK BUKA)' : '🔓 KUNCI TERBUKA (KLIK KUNCI KEMBALI)'}
           </button>
         </div>
 
@@ -1231,12 +1231,19 @@ const ScoringComponent = {
     }
   },
 
-  toggleLock() {
+  toggleLock(evt) {
+    if (evt) {
+      if (typeof evt.preventDefault === 'function') evt.preventDefault();
+      if (typeof evt.stopPropagation === 'function') evt.stopPropagation();
+    }
     const isLocked = window.dataStore.toggleCompetitionsLock();
     if (window.SecurityEngine) {
-      window.SecurityEngine.showWatermarkToast(isLocked ? '🔒 Daftar Jenis Lomba Terkunci (Aman)' : '🔓 Daftar Jenis Lomba Terbuka (Bisa Dihapus)');
+      window.SecurityEngine.showWatermarkToast(isLocked ? '🔒 Daftar Jenis Lomba Terkunci (Mode Aman)' : '🔓 Kunci Terbuka (Mode Hapus Active)');
     }
-    this.render(document.getElementById('app-main-content'));
+    const container = document.getElementById('app-main-content');
+    if (container) {
+      this.render(container);
+    }
   },
 
   moveLomba(fromIdx, toIdx) {

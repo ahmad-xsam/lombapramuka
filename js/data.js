@@ -222,15 +222,19 @@ class DataStore {
 
   get isCompetitionsLocked() {
     const val = localStorage.getItem('simika_competitions_locked_v2');
-    return val === null ? true : val === 'true';
+    if (val === null || val === undefined) return true;
+    return val === 'true' || val === true;
   }
 
   setCompetitionsLocked(isLocked) {
-    localStorage.setItem('simika_competitions_locked_v2', String(isLocked));
+    const boolVal = Boolean(isLocked);
+    localStorage.setItem('simika_competitions_locked_v2', boolVal ? 'true' : 'false');
+    return boolVal;
   }
 
   toggleCompetitionsLock() {
-    const next = !this.isCompetitionsLocked;
+    const current = this.isCompetitionsLocked;
+    const next = !current;
     this.setCompetitionsLocked(next);
     return next;
   }
