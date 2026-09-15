@@ -3237,6 +3237,63 @@ body.theme-light .brand-red-text {
   text-shadow: none !important;
 }
 
+/* Competition Lock / Unlock Button & Reordering Controls */
+.btn-lock-toggle.locked {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+}
+
+.btn-lock-toggle.locked:hover {
+  background: rgba(16, 185, 129, 0.28) !important;
+}
+
+.btn-lock-toggle.unlocked {
+  background: rgba(245, 158, 11, 0.2) !important;
+  color: #f59e0b !important;
+  border: 1px solid rgba(245, 158, 11, 0.5) !important;
+  animation: pulse-lock-warning 2s infinite;
+}
+
+.btn-lock-toggle.unlocked:hover {
+  background: rgba(245, 158, 11, 0.35) !important;
+}
+
+@keyframes pulse-lock-warning {
+  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+.sub-tab-item {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.sub-tab-item:hover {
+  transform: translateY(-1px);
+}
+
+.btn-shift-arrow {
+  transition: color 0.15s ease, opacity 0.15s ease;
+  color: var(--neon-cyan, #00f5d4);
+}
+
+body.theme-light .btn-shift-arrow {
+  color: #d90429 !important;
+}
+
+body.theme-light .btn-lock-toggle.locked {
+  background: #e6f4ea !important;
+  color: #0f766e !important;
+  border-color: #a7f3d0 !important;
+}
+
+body.theme-light .btn-lock-toggle.unlocked {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+  border-color: #fde68a !important;
+}
+
 
 
 

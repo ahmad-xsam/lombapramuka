@@ -12,6 +12,7 @@ const ScoringComponent = {
       this.currentLomba = selectedLombaId;
     }
 
+    const isLocked = window.dataStore.isCompetitionsLocked;
     const activeCat = window.currentCategoryFilter || 'all';
     const leaderboard = window.Calculators.getLombaLeaderboard(this.currentLomba, activeCat);
     const currentCompObj = COMPETITIONS.find(c => c.id === this.currentLomba);
@@ -37,30 +38,63 @@ const ScoringComponent = {
           <p class="page-subtitle" style="margin-top: 0.25rem;">Modul Input Penilaian & Perhitungan Peringkat Otomatis</p>
         </div>
 
-        <button class="btn-yellow-pill" style="padding: 0.6rem 1.25rem; font-size: 0.85rem; background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; box-shadow: 0 4px 18px rgba(0, 245, 212, 0.45); border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; border-radius: 999px; transition: transform 0.2s;" onclick="ScoringComponent.openAddLombaModal()" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
-          <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i> ➕ TAMBAH JENIS LOMBA
-        </button>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <button class="btn-yellow-pill" style="padding: 0.6rem 1.25rem; font-size: 0.85rem; background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; box-shadow: 0 4px 18px rgba(0, 245, 212, 0.45); border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; border-radius: 999px; transition: transform 0.2s;" onclick="ScoringComponent.openAddLombaModal()" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'">
+            <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i> ➕ TAMBAH JENIS LOMBA
+          </button>
+        </div>
       </div>
 
-      <!-- Sub Tabs for Competitions -->
-      <div class="sub-tabs" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; background: rgba(18, 12, 36, 0.6); padding: 0.75rem; border-radius: 14px; border: 1px solid rgba(0, 245, 212, 0.2); margin-bottom: 1.25rem;">
-        <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1;">
-          ${COMPETITIONS.map(c => `
-            <div style="position: relative; display: inline-flex; align-items: center;">
+      <!-- Sub Tabs for Competitions (Reorderable & Lockable) -->
+      <div class="sub-tabs-wrapper" style="margin-bottom: 1.25rem;">
+        <div class="sub-tabs-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="font-size: 0.78rem; font-weight: 700; opacity: 0.85; display: flex; align-items: center; gap: 0.4rem;">
+            <span>📌 DAFTAR MATA LOMBA (${COMPETITIONS.length})</span>
+            <span style="font-size: 0.7rem; font-weight: 400; opacity: 0.75;">(Geser atau gunakan ◄ ► untuk mengubah posisi)</span>
+          </div>
+
+          <!-- Lock / Unlock Toggle Button -->
+          <button type="button" class="btn-lock-toggle ${isLocked ? 'locked' : 'unlocked'}" onclick="ScoringComponent.toggleLock()" style="padding: 0.35rem 0.85rem; font-size: 0.76rem; border-radius: 999px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 0.35rem; transition: all 0.2s;" title="${isLocked ? 'Status Terkunci: Tombol hapus disembunyikan' : 'Status Terbuka: Tombol hapus aktif'}">
+            ${isLocked ? '🔒 DAFTAR LOMBA TERKUNCI' : '🔓 KUNCI TERBUKA (BISA HAPUS LOMBA)'}
+          </button>
+        </div>
+
+        <div class="sub-tabs" style="display: flex; flex-wrap: wrap; gap: 0.45rem; padding: 0.75rem; border-radius: 14px;">
+          ${COMPETITIONS.map((c, idx) => `
+            <div class="sub-tab-item ${c.id === this.currentLomba ? 'active-item' : ''}" 
+                 draggable="true"
+                 ondragstart="ScoringComponent.handleDragStart(event, ${idx})"
+                 ondragover="ScoringComponent.handleDragOver(event)"
+                 ondrop="ScoringComponent.handleDrop(event, ${idx})"
+                 style="position: relative; display: inline-flex; align-items: center; cursor: grab;">
+              
+              <!-- Shift Left Arrow -->
+              ${idx > 0 ? `
+                <button type="button" class="btn-shift-arrow" title="Geser posisi ke Kiri" onclick="event.stopPropagation(); ScoringComponent.moveLomba(${idx}, ${idx - 1})" style="border: none; background: transparent; cursor: pointer; padding: 0 3px; font-size: 0.7rem; opacity: 0.5;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">
+                  ◄
+                </button>
+              ` : ''}
+
               <button class="sub-tab-btn ${c.id === this.currentLomba ? 'active' : ''}" onclick="ScoringComponent.switchLomba('${c.id}')" style="display: flex; align-items: center; gap: 0.35rem;">
                 <i data-lucide="${c.icon || 'trophy'}" style="width: 14px; height: 14px;"></i> ${c.name}
               </button>
-              ${c.isCustom ? `
-                <button type="button" title="Hapus Lomba Ini" onclick="event.stopPropagation(); ScoringComponent.confirmDeleteLomba('${c.id}', '${c.name.replace(/'/g, "\\'")}')" style="background: rgba(239, 68, 68, 0.25); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; margin-left: -8px; margin-right: 4px; cursor: pointer; z-index: 2;" onmouseover="this.style.background='#ef4444'; this.style.color='#fff';" onmouseout="this.style.background='rgba(239, 68, 68, 0.25)'; this.style.color='#ef4444';">
+
+              <!-- Shift Right Arrow -->
+              ${idx < COMPETITIONS.length - 1 ? `
+                <button type="button" class="btn-shift-arrow" title="Geser posisi ke Kanan" onclick="event.stopPropagation(); ScoringComponent.moveLomba(${idx}, ${idx + 1})" style="border: none; background: transparent; cursor: pointer; padding: 0 3px; font-size: 0.7rem; opacity: 0.5;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">
+                  ►
+                </button>
+              ` : ''}
+
+              <!-- Delete Button (Only Visible when Unlocked) -->
+              ${!isLocked ? `
+                <button type="button" title="Hapus Lomba ${c.name}" onclick="event.stopPropagation(); ScoringComponent.confirmDeleteLomba('${c.id}', '${c.name.replace(/'/g, "\\'")}')" style="background: rgba(239, 68, 68, 0.25); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.6); border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; margin-left: 2px; cursor: pointer; z-index: 2;" onmouseover="this.style.background='#ef4444'; this.style.color='#fff';" onmouseout="this.style.background='rgba(239, 68, 68, 0.25)'; this.style.color='#ef4444';">
                   ✕
                 </button>
               ` : ''}
             </div>
           `).join('')}
         </div>
-        <button class="btn-yellow-pill" style="padding: 0.45rem 0.95rem; font-size: 0.8rem; background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; box-shadow: 0 4px 14px rgba(0, 245, 212, 0.4); border: none; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; flex-shrink: 0; border-radius: 999px;" onclick="ScoringComponent.openAddLombaModal()">
-          <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> TAMBAH JENIS LOMBA
-        </button>
       </div>
 
       <!-- Score Entry Table Panel -->
@@ -73,9 +107,6 @@ const ScoringComponent = {
             <div style="font-size: 0.78rem; color: #94a3b8;">
               Kategori Filter: <strong style="color: var(--neon-cyan);">${activeCatLabel}</strong>
             </div>
-            <button class="btn-yellow-pill" style="padding: 0.4rem 0.85rem; font-size: 0.78rem; background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.35rem;" onclick="ScoringComponent.openAddLombaModal()">
-              <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i> Tambah Lomba
-            </button>
             <button class="btn-yellow-pill" style="padding: 0.4rem 0.85rem; font-size: 0.78rem; background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); border: none; font-weight: 700; cursor: pointer;" onclick="ScoringComponent.exportToExcel()">
               Ekspor Excel
             </button>
@@ -1200,7 +1231,42 @@ const ScoringComponent = {
     }
   },
 
+  toggleLock() {
+    const isLocked = window.dataStore.toggleCompetitionsLock();
+    if (window.SecurityEngine) {
+      window.SecurityEngine.showWatermarkToast(isLocked ? '🔒 Daftar Jenis Lomba Terkunci (Aman)' : '🔓 Daftar Jenis Lomba Terbuka (Bisa Dihapus)');
+    }
+    this.render(document.getElementById('app-main-content'));
+  },
+
+  moveLomba(fromIdx, toIdx) {
+    window.dataStore.moveCompetition(fromIdx, toIdx);
+    this.render(document.getElementById('app-main-content'));
+  },
+
+  handleDragStart(evt, index) {
+    evt.dataTransfer.setData('text/plain', String(index));
+    evt.dataTransfer.effectAllowed = 'move';
+  },
+
+  handleDragOver(evt) {
+    evt.preventDefault();
+    evt.dataTransfer.dropEffect = 'move';
+  },
+
+  handleDrop(evt, toIndex) {
+    evt.preventDefault();
+    const fromIndex = parseInt(evt.dataTransfer.getData('text/plain'), 10);
+    if (!isNaN(fromIndex) && fromIndex !== toIndex) {
+      this.moveLomba(fromIndex, toIndex);
+    }
+  },
+
   confirmDeleteLomba(lombaId, name) {
+    if (window.dataStore.isCompetitionsLocked) {
+      alert('🔒 Daftar jenis lomba sedang TERKUNCI.\nSilakan klik tombol "🔒 DAFTAR LOMBA TERKUNCI" untuk membuka kunci sebelum menghapus.');
+      return;
+    }
     if (confirm(`Apakah Anda yakin ingin menghapus jenis lomba "${name}"?\nSemua data nilai lomba ini akan terhapus.`)) {
       window.dataStore.deleteCompetition(lombaId);
       const firstComp = window.dataStore.competitions[0];

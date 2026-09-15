@@ -220,6 +220,36 @@ class DataStore {
     }
   }
 
+  get isCompetitionsLocked() {
+    const val = localStorage.getItem('simika_competitions_locked_v2');
+    return val === null ? true : val === 'true';
+  }
+
+  setCompetitionsLocked(isLocked) {
+    localStorage.setItem('simika_competitions_locked_v2', String(isLocked));
+  }
+
+  toggleCompetitionsLock() {
+    const next = !this.isCompetitionsLocked;
+    this.setCompetitionsLocked(next);
+    return next;
+  }
+
+  reorderCompetitions(newOrderedList) {
+    if (!Array.isArray(newOrderedList)) return;
+    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(newOrderedList));
+    this.postToMongo('/api/competitions/reorder', { competitions: newOrderedList });
+  }
+
+  moveCompetition(fromIndex, toIndex) {
+    const list = [...this.competitions];
+    if (fromIndex < 0 || fromIndex >= list.length || toIndex < 0 || toIndex >= list.length) return list;
+    const [moved] = list.splice(fromIndex, 1);
+    list.splice(toIndex, 0, moved);
+    this.reorderCompetitions(list);
+    return list;
+  }
+
   addCompetition(compData) {
     const current = this.competitions;
     const rawId = (compData.name || 'Lomba Baru')
@@ -259,6 +289,10 @@ class DataStore {
   }
 
   deleteCompetition(id) {
+    if (this.isCompetitionsLocked) {
+      console.warn('[DataStore]: Competition deletion prevented because store is locked.');
+      return false;
+    }
     const updated = this.competitions.filter(c => c.id !== id);
     localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(updated));
 
@@ -270,6 +304,7 @@ class DataStore {
 
     // Sync deletion to MongoDB Atlas
     this.postToMongo('/api/competitions', { id }, 'DELETE');
+    return true;
   }
 
   getTeams(categoryFilter = 'all') {
