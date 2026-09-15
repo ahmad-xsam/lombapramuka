@@ -41,20 +41,30 @@ const ThemeManager = {
       favicon.href = logoSrc;
     }
 
-    // Update theme toggle buttons UI
+    // Update theme toggle buttons UI (ICON-ONLY AS REQUESTED BY USER)
     document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+      btn.style.display = "inline-flex";
+      btn.style.alignItems = "center";
+      btn.style.justifyContent = "center";
+      btn.style.width = "38px";
+      btn.style.height = "38px";
+      btn.style.borderRadius = "50%";
+      btn.style.padding = "0";
+      btn.style.cursor = "pointer";
+      btn.style.transition = "all 0.25s ease";
+
       if (theme === 'light') {
-        btn.innerHTML = `<span style="background: #ffffff; color: #d90429; padding: 2px 7px; border-radius: 6px; font-weight: 900; font-size: 0.72rem; letter-spacing: 0.05em; border: 1px solid #d90429;">MERAH-PUTIH</span> <i data-lucide="sun" style="width: 15px; height: 15px; color: #ffffff;"></i> <span style="color: #ffffff; font-weight: 800;">LIGHT MODE</span>`;
-        btn.title = "Klik untuk beralih ke Dark Mode (Hitam-Merah)";
-        btn.style.background = "linear-gradient(135deg, #d90429 0%, #b7094c 100%)";
-        btn.style.borderColor = "#ffffff";
-        btn.style.color = "#ffffff";
+        btn.innerHTML = `<i data-lucide="sun" style="width: 20px; height: 20px; color: #d90429;"></i>`;
+        btn.title = "Beralih ke Dark Mode (Hitam-Merah)";
+        btn.style.background = "#ffffff";
+        btn.style.border = "2px solid #d90429";
+        btn.style.boxShadow = "0 2px 10px rgba(217, 4, 41, 0.25)";
       } else {
-        btn.innerHTML = `<span style="background: #000000; color: #ff3355; padding: 2px 7px; border-radius: 6px; font-weight: 900; font-size: 0.72rem; letter-spacing: 0.05em; border: 1px solid #ff3355;">HITAM-MERAH</span> <i data-lucide="moon" style="width: 15px; height: 15px; color: #ff3355;"></i> <span style="color: #ff3355; font-weight: 800;">DARK MODE</span>`;
-        btn.title = "Klik untuk beralih ke Light Mode (Merah-Putih)";
-        btn.style.background = "linear-gradient(135deg, #0f0508 0%, #2a0008 100%)";
-        btn.style.borderColor = "rgba(255, 51, 85, 0.4)";
-        btn.style.color = "#ff3355";
+        btn.innerHTML = `<i data-lucide="moon" style="width: 20px; height: 20px; color: #ff3355;"></i>`;
+        btn.title = "Beralih ke Light Mode (Merah-Putih)";
+        btn.style.background = "#18060c";
+        btn.style.border = "2px solid rgba(255, 51, 85, 0.5)";
+        btn.style.boxShadow = "0 0 12px rgba(255, 51, 85, 0.3)";
       }
     });
 

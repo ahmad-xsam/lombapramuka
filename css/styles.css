@@ -2731,35 +2731,97 @@ button, input, select, textarea {
 }
 
 /* ==========================================================================
-   THEME MODE OVERRIDES (LIGHT MODE: MERAH-PUTIH | DARK MODE: HITAM-MERAH)
+   OFFICIAL SIMIKA BRAND COLOR SYSTEM & DYNAMIC THEME ENGINE
    ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. BRAND LOGO TEXT ("SIMIKA") & TAGLINE ("TUMBUH. BERKARYA. BERMAKNA.")
+   -------------------------------------------------------------------------- */
+.brand-text-accent {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 900 !important;
+  letter-spacing: 0.08em;
+  transition: all 0.3s ease;
+}
+
+body.theme-light .brand-text-accent {
+  color: #d90429 !important;
+  background: linear-gradient(135deg, #d90429 0%, #b7094c 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 2px 8px rgba(217, 4, 41, 0.25)) !important;
+}
+
+body.theme-dark .brand-text-accent,
+.brand-text-accent {
+  color: #ff3355 !important;
+  background: linear-gradient(135deg, #ffffff 0%, #ff4d6d 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 0 12px rgba(230, 0, 46, 0.6)) !important;
+}
+
+/* Tagline "TUMBUH. BERKARYA. BERMAKNA." Red Text Color */
+body.theme-light .brand-red-text {
+  color: #d90429 !important; /* Exact logo red color */
+  text-shadow: 0 4px 18px rgba(217, 4, 41, 0.18);
+}
+
+body.theme-dark .brand-red-text,
+.brand-red-text {
+  color: #ffffff !important;
+  text-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+/* --------------------------------------------------------------------------
+   2. COMPREHENSIVE LIGHT MODE OVERRIDES FOR ALL COMPONENTS & TEXT
+   -------------------------------------------------------------------------- */
 body.theme-light {
   background-color: #f8fafc !important;
   color: #0f172a !important;
 }
 
+/* Base Headings & Paragraphs in Light Mode */
+body.theme-light h1,
+body.theme-light h2,
+body.theme-light h3,
+body.theme-light h4,
+body.theme-light h5,
+body.theme-light h6 {
+  color: #0f172a !important;
+}
+
+body.theme-light p,
+body.theme-light label {
+  color: #334155;
+}
+
+/* Landing Page Wrapper & Hero Scene */
 body.theme-light .crimson-landing-wrapper {
   background-color: #f8fafc !important;
   color: #0f172a !important;
+}
+
+body.theme-light .crimson-header {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  backdrop-filter: blur(12px) !important;
 }
 
 body.theme-light .crimson-hero-scene {
   background: radial-gradient(circle at 75% 30%, #fff0f3 0%, #ffe3e8 40%, #f8fafc 90%) !important;
 }
 
-body.theme-light .crimson-giant-title {
-  color: #990024 !important;
-  text-shadow: 0 4px 20px rgba(217, 4, 41, 0.15) !important;
-}
-
-body.theme-light .crimson-hero-desc {
-  color: #334155 !important;
-}
-
 body.theme-light .crimson-tagline {
   background: rgba(217, 4, 41, 0.08) !important;
   border-color: rgba(217, 4, 41, 0.25) !important;
   color: #d90429 !important;
+}
+
+body.theme-light .crimson-hero-desc {
+  color: #334155 !important;
 }
 
 body.theme-light .crimson-nav-menu a {
@@ -2796,15 +2858,37 @@ body.theme-light .btn-crimson-work:hover {
 
 body.theme-light .award-wreath-badge {
   background: #ffffff !important;
-  border-color: rgba(217, 4, 41, 0.2) !important;
+  border-color: rgba(217, 4, 41, 0.25) !important;
   color: #990024 !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
 }
 
+/* Stats Row in Light Mode */
+body.theme-light .stat-item {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.theme-light .stat-num {
+  color: #d90429 !important;
+}
+
+body.theme-light .stat-label {
+  color: #64748b !important;
+}
+
+/* About Section & Cards in Light Mode */
 body.theme-light .crimson-about-card {
   background: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+body.theme-light .about-tag {
+  background: rgba(217, 4, 41, 0.08) !important;
+  color: #d90429 !important;
+  border-color: rgba(217, 4, 41, 0.2) !important;
 }
 
 body.theme-light .about-title {
@@ -2816,7 +2900,7 @@ body.theme-light .about-desc {
 }
 
 body.theme-light .feature-card {
-  background: #f1f5f9 !important;
+  background: #f8fafc !important;
   border: 1px solid #e2e8f0 !important;
 }
 
@@ -2828,25 +2912,59 @@ body.theme-light .feature-card p {
   color: #475569 !important;
 }
 
-body.theme-light .card-panel {
+/* Card Panels & Containers in Light Mode */
+body.theme-light .card-panel,
+body.theme-light .level-progress-card {
   background: #ffffff !important;
   border-color: #e2e8f0 !important;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
 }
 
 body.theme-light .panel-title,
-body.theme-light .scoreboard-title {
+body.theme-light .scoreboard-title,
+body.theme-light .page-title {
   color: #0f172a !important;
 }
 
-body.theme-light .scoreboard-subtitle {
+body.theme-light .scoreboard-subtitle,
+body.theme-light .page-subtitle {
   color: #475569 !important;
+}
+
+/* Sub tabs & Filter buttons in Light Mode */
+body.theme-light .sub-tabs,
+body.theme-light .category-filter-bar,
+body.theme-light .crimson-sub-tabs {
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+body.theme-light .sub-tab-btn,
+body.theme-light .filter-tab-btn {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+body.theme-light .sub-tab-btn.active,
+body.theme-light .filter-tab-btn.active {
+  background: linear-gradient(135deg, #d90429 0%, #b7094c 100%) !important;
+  color: #ffffff !important;
+  border-color: #d90429 !important;
+  box-shadow: 0 4px 12px rgba(217, 4, 41, 0.3) !important;
+}
+
+/* Tables in Light Mode */
+body.theme-light .custom-table,
+body.theme-light .admin-table {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
 }
 
 body.theme-light .custom-table th,
 body.theme-light .admin-table th {
   background: #f1f5f9 !important;
-  color: #1e293b !important;
+  color: #0f172a !important;
   border-bottom: 2px solid #cbd5e1 !important;
 }
 
@@ -2856,28 +2974,108 @@ body.theme-light .admin-table td {
   border-bottom: 1px solid #f1f5f9 !important;
 }
 
-body.theme-light .custom-table td strong {
+body.theme-light .custom-table tr:hover,
+body.theme-light .admin-table tr:hover {
+  background: #f8fafc !important;
+}
+
+body.theme-light .custom-table td strong,
+body.theme-light .admin-table td strong {
   color: #0f172a !important;
 }
 
-body.theme-light .crimson-footer {
+/* Form inputs & Controls in Light Mode */
+body.theme-light .form-control,
+body.theme-light input[type="text"],
+body.theme-light input[type="password"],
+body.theme-light input[type="number"],
+body.theme-light input[type="date"],
+body.theme-light select,
+body.theme-light textarea {
   background: #ffffff !important;
-  border-top: 1px solid #e2e8f0 !important;
-  color: #475569 !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
 }
 
-body.theme-light .footer-brand {
+body.theme-light .form-control:focus,
+body.theme-light input:focus,
+body.theme-light select:focus {
+  border-color: #d90429 !important;
+  box-shadow: 0 0 0 3px rgba(217, 4, 41, 0.15) !important;
+}
+
+/* Modals & Dialogs in Light Mode */
+body.theme-light .modal-backdrop,
+body.theme-light .modal-overlay {
+  background: rgba(15, 23, 42, 0.6) !important;
+}
+
+body.theme-light .modal-container,
+body.theme-light .modal-content,
+body.theme-light .modal-card {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.theme-light .modal-header h3,
+body.theme-light .modal-title {
+  color: #0f172a !important;
+}
+
+body.theme-light .modal-footer {
+  border-top: 1px solid #f1f5f9 !important;
+}
+
+/* Split Login Page in Light Mode */
+body.theme-light .split-login-page {
+  background: #f8fafc !important;
+}
+
+body.theme-light .split-login-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.theme-light .login-left-illustration {
+  background: linear-gradient(135deg, #fff0f3 0%, #ffe3e8 100%) !important;
+  border-right: 1px solid #f1f5f9 !important;
+}
+
+body.theme-light .scout-character-graphic h2 {
   color: #d90429 !important;
 }
 
-body.theme-light .footer-copy {
+body.theme-light .scout-character-graphic p {
+  color: #475569 !important;
+}
+
+body.theme-light .login-right-form-panel {
+  background: #ffffff !important;
+}
+
+body.theme-light .login-form-title {
+  color: #0f172a !important;
+}
+
+body.theme-light .btn-back-link {
   color: #64748b !important;
 }
 
-/* Admin Sidebar Light Theme Overrides */
+body.theme-light .btn-back-link:hover {
+  color: #d90429 !important;
+}
+
+/* Admin Sidebar & Header in Light Mode */
 body.theme-light .sidebar {
   background: #ffffff !important;
   border-right: 1px solid #e2e8f0 !important;
+}
+
+body.theme-light .creator-brand {
+  border-bottom: 1px solid #f1f5f9 !important;
 }
 
 body.theme-light .creator-nav-menu button {
@@ -2888,6 +3086,7 @@ body.theme-light .creator-nav-menu li.active button,
 body.theme-light .creator-nav-menu button:hover {
   background: rgba(217, 4, 41, 0.08) !important;
   color: #d90429 !important;
+  font-weight: 800 !important;
 }
 
 body.theme-light .creator-header {
@@ -2906,6 +3105,45 @@ body.theme-light .cybet-search-bar input {
 
 body.theme-light #sidebar-user-name {
   color: #0f172a !important;
+}
+
+body.theme-light .creator-user-role-badge {
+  background: rgba(217, 4, 41, 0.1) !important;
+  color: #d90429 !important;
+}
+
+/* Mobile Bottom Navigation Bar in Light Mode */
+body.theme-light .mobile-android-nav {
+  background: #ffffff !important;
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+body.theme-light .mobile-nav-item {
+  color: #64748b !important;
+}
+
+body.theme-light .mobile-nav-item.active,
+body.theme-light .mobile-nav-item:hover {
+  color: #d90429 !important;
+}
+
+/* Footer in Light Mode */
+body.theme-light .crimson-footer {
+  background: #ffffff !important;
+  border-top: 1px solid #e2e8f0 !important;
+  color: #475569 !important;
+}
+
+body.theme-light .footer-brand {
+  color: #d90429 !important;
+}
+
+body.theme-light .footer-text {
+  color: #475569 !important;
+}
+
+body.theme-light .footer-copy {
+  color: #64748b !important;
 }
 
 

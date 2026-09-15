@@ -53,8 +53,8 @@ class AppRouter {
       if (this.sidebar) this.sidebar.style.display = 'none';
       if (this.topHeader) this.topHeader.style.display = 'none';
       if (this.appContainer) this.appContainer.classList.remove('admin-layout');
-      document.body.style.backgroundColor = '#100004';
-      document.body.style.color = '#ffffff';
+      document.body.style.backgroundColor = '';
+      document.body.style.color = '';
 
       if (this.mainContent) {
         this.mainContent.style.padding = '0';
@@ -65,8 +65,8 @@ class AppRouter {
       if (this.sidebar) this.sidebar.style.display = 'none';
       if (this.topHeader) this.topHeader.style.display = 'none';
       if (this.appContainer) this.appContainer.classList.remove('admin-layout');
-      document.body.style.backgroundColor = '#100004';
-      document.body.style.color = '#ffffff';
+      document.body.style.backgroundColor = '';
+      document.body.style.color = '';
 
       if (this.mainContent) {
         this.mainContent.style.padding = '0';
@@ -78,8 +78,8 @@ class AppRouter {
       if (this.sidebar) this.sidebar.style.display = 'none';
       if (this.topHeader) this.topHeader.style.display = 'none';
       if (this.appContainer) this.appContainer.classList.remove('admin-layout');
-      document.body.style.backgroundColor = '#100004';
-      document.body.style.color = '#ffffff';
+      document.body.style.backgroundColor = '';
+      document.body.style.color = '';
 
       if (this.mainContent) {
         this.mainContent.style.padding = '0';
@@ -90,8 +90,8 @@ class AppRouter {
       if (this.sidebar) this.sidebar.style.display = 'flex';
       if (this.topHeader) this.topHeader.style.display = 'flex';
       if (this.appContainer) this.appContainer.classList.add('admin-layout');
-      document.body.style.backgroundColor = '#090d16';
-      document.body.style.color = '#ffffff';
+      document.body.style.backgroundColor = '';
+      document.body.style.color = '';
 
       if (this.mainContent) {
         this.mainContent.style.padding = '2rem';

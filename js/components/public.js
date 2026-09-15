@@ -88,9 +88,9 @@ const PublicComponent = {
             </div>
 
             <h1 class="crimson-giant-title">
-              TUMBUH.<br>
-              BERKARYA.<br>
-              BERMAKNA.
+              <span class="brand-red-text">TUMBUH.</span><br>
+              <span class="brand-red-text">BERKARYA.</span><br>
+              <span class="brand-red-text">BERMAKNA.</span>
             </h1>
 
             <p class="crimson-hero-desc">
