@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname)));
 
-// API Routes
+// API Routes for Local Express Server
 app.all('/api/competitions', require('./api/competitions'));
 app.all('/api/teams', require('./api/teams'));
 app.all('/api/scores', require('./api/scores'));
@@ -22,6 +22,6 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 SiMika Server running at http://localhost:${PORT}`);
+  console.log(`🚀 SiMika Local Dev Server running at http://localhost:${PORT}`);
   console.log(`📦 MongoDB Atlas Connected: mongodb+srv://bandungpreanger_db_user:lSoI9r4s25T4qRN4@ahmadxsam.n459uq9.mongodb.net/?appName=ahmadxsam`);
 });

@@ -3,8 +3,8 @@
   "version": "2.0.0",
   "description": "SiMika - Sistem Rekapitulasi Lomba Pramuka Online Real-Time dengan MongoDB Atlas",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node dev-server.js",
+    "dev": "node dev-server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
