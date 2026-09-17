@@ -172,8 +172,13 @@ class DataStore {
 
         // If Mongo has competitions, sort by order and update localStorage
         if (Array.isArray(competitions) && competitions.length > 0) {
-          competitions.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
-          localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(competitions));
+          const cleanComps = competitions
+            .map((c, idx) => {
+              const { _id, ...clean } = c;
+              return { ...clean, order: typeof clean.order === 'number' ? clean.order : idx };
+            })
+            .sort((a, b) => a.order - b.order);
+          localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(cleanComps));
         } else {
           // If Mongo has no competitions, push local competitions to Mongo
           const localComps = this.competitions;
@@ -291,7 +296,10 @@ class DataStore {
 
   reorderCompetitions(newOrderedList) {
     if (!Array.isArray(newOrderedList)) return;
-    const ordered = newOrderedList.map((c, idx) => ({ ...c, order: idx }));
+    const ordered = newOrderedList.map((c, idx) => {
+      const { _id, ...clean } = c;
+      return { ...clean, order: idx };
+    });
     localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(ordered));
     this.postToMongo('/api/competitions/reorder', { competitions: ordered });
   }

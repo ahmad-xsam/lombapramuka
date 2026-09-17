@@ -36,13 +36,16 @@ module.exports = async function handler(req, res) {
           await collection.deleteMany({ id: { $in: idsToRemove } });
         }
 
-        const operations = body.competitions.map((comp, idx) => ({
-          updateOne: {
-            filter: { id: comp.id },
-            update: { $set: { ...comp, order: idx, updatedAt: new Date() } },
-            upsert: true
-          }
-        }));
+        const operations = body.competitions.map((comp, idx) => {
+          const { _id, ...cleanComp } = comp;
+          return {
+            updateOne: {
+              filter: { id: cleanComp.id },
+              update: { $set: { ...cleanComp, order: idx, updatedAt: new Date() } },
+              upsert: true
+            }
+          };
+        });
         if (operations.length > 0) {
           await collection.bulkWrite(operations);
         }
@@ -53,12 +56,13 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Missing required competition parameters (id, name).' });
       }
 
+      const { _id, ...cleanBody } = body;
       await collection.updateOne(
-        { id: body.id },
-        { $set: { ...body, updatedAt: new Date() } },
+        { id: cleanBody.id },
+        { $set: { ...cleanBody, updatedAt: new Date() } },
         { upsert: true }
       );
-      return res.status(200).json({ success: true, competition: body });
+      return res.status(200).json({ success: true, competition: cleanBody });
     }
 
     if (req.method === 'DELETE') {
