@@ -353,29 +353,32 @@ class DataStore {
     return null;
   }
 
+  generateSuggestedId(category) {
+    const current = this.teams;
+    const catCode = (category || 'sd_pa').toUpperCase().replace('_', '-');
+    const existingCount = current.filter(t => t.category === category).length;
+    const seq = (existingCount + 1).toString().padStart(2, '0');
+    return `${catCode}-${seq}`;
+  }
+
   addTeam(teamData) {
     const current = this.teams;
-    const catCode = teamData.category.toUpperCase().replace('_', '-');
-    const seq = (current.filter(t => t.category === teamData.category).length + 1).toString().padStart(2, '0');
+    const targetId = (teamData.id && teamData.id.trim()) 
+      ? teamData.id.trim() 
+      : this.generateSuggestedId(teamData.category);
+
+    // Check if ID already exists
+    if (current.some(t => t.id.toLowerCase() === targetId.toLowerCase())) {
+      alert(`❌ ID Regu/Sangga "${targetId}" sudah digunakan oleh peserta lain! Silakan gunakan ID yang berbeda.`);
+      return null;
+    }
+
     const newTeam = {
-      id: `${catCode}-${seq}`,
-      ...teamData
+      ...teamData,
+      id: targetId
     };
     current.push(newTeam);
     localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(current));
-
-    // Ensure no orphan score exists for the newly added team ID
-    const allScores = this.scores;
-    let modified = false;
-    Object.keys(allScores).forEach(lombaId => {
-      if (allScores[lombaId] && allScores[lombaId][newTeam.id]) {
-        delete allScores[lombaId][newTeam.id];
-        modified = true;
-      }
-    });
-    if (modified) {
-      localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(allScores));
-    }
 
     // Sync to MongoDB Atlas
     this.postToMongo('/api/teams', newTeam);
@@ -403,22 +406,52 @@ class DataStore {
     this.postToMongo('/api/teams', { id }, 'DELETE');
   }
 
-  updateTeam(id, teamData) {
+  updateTeam(oldId, teamData) {
     const current = this.teams;
-    const index = current.findIndex(t => t.id === id);
-    if (index !== -1) {
-      current[index] = {
-        ...current[index],
-        ...teamData
-      };
-      localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(current));
+    const index = current.findIndex(t => t.id === oldId);
+    if (index === -1) return null;
 
-      // Sync to MongoDB Atlas
-      this.postToMongo('/api/teams', current[index], 'PUT');
+    const newId = (teamData.id && teamData.id.trim()) ? teamData.id.trim() : oldId;
 
-      return current[index];
+    // Check duplicate if ID changed
+    if (newId.toLowerCase() !== oldId.toLowerCase() && current.some(t => t.id.toLowerCase() === newId.toLowerCase())) {
+      alert(`❌ ID Regu/Sangga "${newId}" sudah digunakan oleh peserta lain! Silakan gunakan ID yang berbeda.`);
+      return null;
     }
-    return null;
+
+    const updatedTeam = {
+      ...current[index],
+      ...teamData,
+      id: newId
+    };
+
+    current[index] = updatedTeam;
+    localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(current));
+
+    // If ID changed, migrate scores linked to oldId to newId
+    if (newId !== oldId) {
+      const allScores = this.scores;
+      let modified = false;
+      Object.keys(allScores).forEach(lombaId => {
+        if (allScores[lombaId] && allScores[lombaId][oldId]) {
+          allScores[lombaId][newId] = allScores[lombaId][oldId];
+          delete allScores[lombaId][oldId];
+          modified = true;
+        }
+      });
+      if (modified) {
+        localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(allScores));
+        this.postToMongo('/api/scores', { fullScores: allScores });
+      }
+
+      // Delete old ID record in Mongo and save new team
+      this.postToMongo('/api/teams', { id: oldId }, 'DELETE');
+      this.postToMongo('/api/teams', updatedTeam, 'POST');
+    } else {
+      this.postToMongo('/api/teams', updatedTeam, 'PUT');
+    }
+
+    return updatedTeam;
   }
 
   getScoresForLomba(lombaId) {

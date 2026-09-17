@@ -128,8 +128,18 @@ const ParticipantsComponent = {
     this.render(document.getElementById('app-main-content'));
   },
 
+  updateSuggestedId() {
+    const catEl = document.getElementById('input-category');
+    const idEl = document.getElementById('input-team-id');
+    if (catEl && idEl && window.dataStore) {
+      idEl.value = window.dataStore.generateSuggestedId(catEl.value);
+    }
+  },
+
   openAddModal() {
     this.closeModal();
+
+    const activeCat = window.currentCategoryFilter !== 'all' ? window.currentCategoryFilter : 'sd_pa';
 
     const modalHTML = `
       <div class="modal-overlay open" id="participant-modal">
@@ -140,6 +150,16 @@ const ParticipantsComponent = {
           </div>
           <form onsubmit="ParticipantsComponent.saveTeam(event)">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+              <div class="form-group">
+                <label>Kategori Lomba *</label>
+                <select id="input-category" class="form-control" required onchange="ParticipantsComponent.updateSuggestedId()">
+                  ${CATEGORIES.map(c => `<option value="${c.id}" ${c.id === activeCat ? 'selected' : ''}>${c.label}</option>`).join('')}
+                </select>
+              </div>
+              <div class="form-group">
+                <label>ID Regu / Sangga *</label>
+                <input type="text" id="input-team-id" class="form-control" placeholder="Contoh: SD-PA-01" required style="font-family: monospace; font-weight: 700; color: var(--neon-cyan);" />
+              </div>
               <div class="form-group" style="grid-column: 1 / -1;">
                 <label>Nama Regu / Sangga *</label>
                 <input type="text" id="input-team-name" class="form-control" placeholder="Contoh: Regu Garuda 01" required />
@@ -152,13 +172,7 @@ const ParticipantsComponent = {
                 <label>Nama Pembina / Pendamping *</label>
                 <input type="text" id="input-pembina" class="form-control" placeholder="Contoh: Kak Budi Santoso" required />
               </div>
-              <div class="form-group">
-                <label>Kategori Lomba *</label>
-                <select id="input-category" class="form-control" required>
-                  ${CATEGORIES.map(c => `<option value="${c.id}">${c.label}</option>`).join('')}
-                </select>
-              </div>
-              <div class="form-group">
+              <div class="form-group" style="grid-column: 1 / -1;">
                 <label>Jumlah Anggota</label>
                 <input type="number" id="input-members" class="form-control" value="8" min="1" max="15" required />
               </div>
@@ -173,6 +187,7 @@ const ParticipantsComponent = {
     `;
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
+    this.updateSuggestedId();
     lucide.createIcons();
   },
 
@@ -191,6 +206,16 @@ const ParticipantsComponent = {
           </div>
           <form onsubmit="ParticipantsComponent.saveTeam(event, '${team.id}')">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+              <div class="form-group">
+                <label>Kategori Lomba *</label>
+                <select id="input-category" class="form-control" required>
+                  ${CATEGORIES.map(c => `<option value="${c.id}" ${c.id === team.category ? 'selected' : ''}>${c.label}</option>`).join('')}
+                </select>
+              </div>
+              <div class="form-group">
+                <label>ID Regu / Sangga *</label>
+                <input type="text" id="input-team-id" class="form-control" value="${team.id}" required style="font-family: monospace; font-weight: 700; color: var(--neon-cyan);" />
+              </div>
               <div class="form-group" style="grid-column: 1 / -1;">
                 <label>Nama Regu / Sangga *</label>
                 <input type="text" id="input-team-name" class="form-control" value="${team.name}" required />
@@ -203,13 +228,7 @@ const ParticipantsComponent = {
                 <label>Nama Pembina / Pendamping *</label>
                 <input type="text" id="input-pembina" class="form-control" value="${team.pembina}" required />
               </div>
-              <div class="form-group">
-                <label>Kategori Lomba *</label>
-                <select id="input-category" class="form-control" required>
-                  ${CATEGORIES.map(c => `<option value="${c.id}" ${c.id === team.category ? 'selected' : ''}>${c.label}</option>`).join('')}
-                </select>
-              </div>
-              <div class="form-group">
+              <div class="form-group" style="grid-column: 1 / -1;">
                 <label>Jumlah Anggota</label>
                 <input type="number" id="input-members" class="form-control" value="${team.members || 8}" min="1" max="15" required />
               </div>
@@ -467,16 +486,24 @@ const ParticipantsComponent = {
 
   saveTeam(e, editId = null) {
     e.preventDefault();
-    const name = document.getElementById('input-team-name').value;
-    const pangkalan = document.getElementById('input-pangkalan').value;
-    const pembina = document.getElementById('input-pembina').value;
+    const id = (document.getElementById('input-team-id')?.value || '').trim();
+    const name = (document.getElementById('input-team-name')?.value || '').trim();
+    const pangkalan = (document.getElementById('input-pangkalan')?.value || '').trim();
+    const pembina = (document.getElementById('input-pembina')?.value || '').trim();
     const category = document.getElementById('input-category').value;
     const members = Number(document.getElementById('input-members').value) || 8;
 
+    if (!id) {
+      alert('❌ ID Regu / Sangga wajib diisi!');
+      return;
+    }
+
     if (editId) {
-      window.dataStore.updateTeam(editId, { name, pangkalan, pembina, category, members });
+      const updated = window.dataStore.updateTeam(editId, { id, name, pangkalan, pembina, category, members });
+      if (!updated) return;
     } else {
-      window.dataStore.addTeam({ name, pangkalan, pembina, category, members });
+      const added = window.dataStore.addTeam({ id, name, pangkalan, pembina, category, members });
+      if (!added) return;
     }
 
     this.closeModal();
