@@ -79,6 +79,11 @@ const ScoringComponent = {
                 <i data-lucide="${c.icon || 'trophy'}" style="width: 14px; height: 14px;"></i> ${c.name}
               </button>
 
+              <!-- Edit Name Button -->
+              <button type="button" title="Edit penamaan & ikon lomba ${c.name}" onclick="event.stopPropagation(); ScoringComponent.openEditLombaModal('${c.id}', '${c.name.replace(/'/g, "\\'")}', '${c.icon || 'trophy'}')" style="background: rgba(0, 245, 212, 0.15); color: var(--neon-cyan); border: 1px solid rgba(0, 245, 212, 0.4); border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; margin-left: 2px; cursor: pointer; z-index: 2;" onmouseover="this.style.background='var(--neon-cyan)'; this.style.color='#000';" onmouseout="this.style.background='rgba(0, 245, 212, 0.15)'; this.style.color='var(--neon-cyan)';">
+                ✏️
+              </button>
+
               <!-- Shift Right Arrow -->
               ${idx < COMPETITIONS.length - 1 ? `
                 <button type="button" class="btn-shift-arrow" title="Geser posisi ke Kanan" onclick="event.stopPropagation(); ScoringComponent.moveLomba(${idx}, ${idx + 1})" style="border: none; background: transparent; cursor: pointer; padding: 0 3px; font-size: 0.7rem; opacity: 0.5;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">
@@ -1207,6 +1212,90 @@ const ScoringComponent = {
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     lucide.createIcons();
+  },
+
+  closeModal() {
+    const elAdd = document.getElementById('add-lomba-modal');
+    if (elAdd) elAdd.remove();
+    const elEdit = document.getElementById('edit-lomba-modal');
+    if (elEdit) elEdit.remove();
+  },
+
+  openEditLombaModal(lombaId, currentName, currentIcon) {
+    this.closeModal();
+
+    const modalHTML = `
+      <div class="modal-overlay open" id="edit-lomba-modal" onclick="if(event.target === this) ScoringComponent.closeModal()">
+        <div class="modal-container" style="max-width: 520px;">
+          <div class="modal-header">
+            <div>
+              <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem; color: #fff;">
+                <i data-lucide="edit-3" style="color: var(--neon-cyan);"></i> EDIT NAMA JENIS LOMBA
+              </h3>
+              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 0.15rem;">Ubah penamaan mata lomba dan ikonnnya dalam sistem</p>
+            </div>
+            <button class="btn-outline" type="button" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;" onclick="ScoringComponent.closeModal()">✕</button>
+          </div>
+          <form onsubmit="ScoringComponent.saveEditLomba(event, '${lombaId}')">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label style="font-weight: 700; color: #fff;">Nama Jenis Lomba <span style="color: #ef4444;">*</span></label>
+              <input type="text" id="el-name" class="form-control" value="${currentName}" required />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label style="font-weight: 700; color: #fff;">Pilih Ikon Mata Lomba</label>
+              <select id="el-icon" class="form-control">
+                <option value="trophy" ${currentIcon === 'trophy' ? 'selected' : ''}>🏆 Trophy / Piala</option>
+                <option value="award" ${currentIcon === 'award' ? 'selected' : ''}>🥇 Award / Medali</option>
+                <option value="star" ${currentIcon === 'star' ? 'selected' : ''}>⭐ Star / Bintang</option>
+                <option value="shield" ${currentIcon === 'shield' ? 'selected' : ''}>🛡️ Shield / Perisai</option>
+                <option value="flag" ${currentIcon === 'flag' ? 'selected' : ''}>🚩 Flag / Bendera</option>
+                <option value="zap" ${currentIcon === 'zap' ? 'selected' : ''}>⚡ Zap / Ketangkasan</option>
+                <option value="heart-pulse" ${currentIcon === 'heart-pulse' ? 'selected' : ''}>❤️ Heart / P3K</option>
+                <option value="compass" ${currentIcon === 'compass' ? 'selected' : ''}>🧭 Compass / Pioneering</option>
+                <option value="key" ${currentIcon === 'key' ? 'selected' : ''}>🔑 Key / Sandi</option>
+                <option value="radio" ${currentIcon === 'radio' ? 'selected' : ''}>📻 Radio / Morse</option>
+                <option value="file-text" ${currentIcon === 'file-text' ? 'selected' : ''}>📄 File / Administrasi</option>
+                <option value="music" ${currentIcon === 'music' ? 'selected' : ''}>🎵 Music / Joged</option>
+                <option value="palette" ${currentIcon === 'palette' ? 'selected' : ''}>🎨 Palette / Arts</option>
+                <option value="box" ${currentIcon === 'box' ? 'selected' : ''}>📦 Box / Hasta Karya</option>
+                <option value="target" ${currentIcon === 'target' ? 'selected' : ''}>🎯 Target / Ketepatan</option>
+                <option value="sparkles" ${currentIcon === 'sparkles' ? 'selected' : ''}>✨ Sparkles / Spesial</option>
+              </select>
+            </div>
+
+            <div class="modal-footer" style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
+              <button type="button" class="btn-outline" onclick="ScoringComponent.closeModal()">Batal</button>
+              <button type="submit" class="btn-yellow-pill" style="background: linear-gradient(135deg, #00f5d4, #0284c7); color: #090d16; font-weight: 900; border: none; padding: 0.6rem 1.2rem; border-radius: 999px; cursor: pointer;">
+                Update Penamaan Lomba
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    lucide.createIcons();
+  },
+
+  saveEditLomba(e, id) {
+    e.preventDefault();
+    const nameInput = document.getElementById('el-name');
+    const iconInput = document.getElementById('el-icon');
+
+    if (!nameInput || !nameInput.value.trim()) return;
+
+    const name = nameInput.value.trim();
+    const icon = iconInput ? iconInput.value : 'trophy';
+
+    const updated = window.dataStore.updateCompetition(id, { name, icon });
+    this.closeModal();
+    this.render(document.getElementById('app-main-content'));
+
+    if (window.SecurityEngine) {
+      window.SecurityEngine.showWatermarkToast(`✏️ Penamaan Lomba Berhasil Diperbarui: "${updated.name}"`);
+    }
   },
 
   saveNewLomba(e) {

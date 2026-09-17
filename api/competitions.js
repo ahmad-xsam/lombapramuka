@@ -23,7 +23,7 @@ module.exports = async function handler(req, res) {
       return res.status(200).json(data);
     }
 
-    if (req.method === 'POST') {
+    if (req.method === 'POST' || req.method === 'PUT') {
       const body = req.body || {};
       if (!body.id || !body.name) {
         return res.status(400).json({ error: 'Missing required competition parameters (id, name).' });

@@ -320,6 +320,31 @@ class DataStore {
     return newComp;
   }
 
+  updateCompetition(id, updatedData) {
+    const current = this.competitions;
+    const index = current.findIndex(c => c.id === id);
+    if (index === -1) return null;
+
+    let compName = (updatedData.name || '').trim();
+    if (compName && !compName.toLowerCase().startsWith('lomba ')) {
+      compName = `Lomba ${compName}`;
+    }
+
+    const updated = {
+      ...current[index],
+      name: compName || current[index].name,
+      icon: updatedData.icon || current[index].icon
+    };
+
+    current[index] = updated;
+    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(current));
+
+    // Sync to MongoDB Atlas
+    this.postToMongo('/api/competitions', updated, 'PUT');
+
+    return updated;
+  }
+
   deleteCompetition(id) {
     if (this.isCompetitionsLocked) {
       console.warn('[DataStore]: Competition deletion prevented because store is locked.');
