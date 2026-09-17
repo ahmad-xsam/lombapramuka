@@ -19,12 +19,36 @@ module.exports = async function handler(req, res) {
     const collection = db.collection('competitions');
 
     if (req.method === 'GET') {
-      const data = await collection.find({}).toArray();
+      const data = await collection.find({}).sort({ order: 1 }).toArray();
       return res.status(200).json(data);
     }
 
     if (req.method === 'POST' || req.method === 'PUT') {
       const body = req.body || {};
+
+      // Bulk reorder or batch update competitions
+      if (Array.isArray(body.competitions)) {
+        const currentInDb = await collection.find({}).toArray();
+        const incomingIds = new Set(body.competitions.map(c => c.id));
+        
+        const idsToRemove = currentInDb.filter(c => !incomingIds.has(c.id)).map(c => c.id);
+        if (idsToRemove.length > 0) {
+          await collection.deleteMany({ id: { $in: idsToRemove } });
+        }
+
+        const operations = body.competitions.map((comp, idx) => ({
+          updateOne: {
+            filter: { id: comp.id },
+            update: { $set: { ...comp, order: idx, updatedAt: new Date() } },
+            upsert: true
+          }
+        }));
+        if (operations.length > 0) {
+          await collection.bulkWrite(operations);
+        }
+        return res.status(200).json({ success: true, count: body.competitions.length });
+      }
+
       if (!body.id || !body.name) {
         return res.status(400).json({ error: 'Missing required competition parameters (id, name).' });
       }
@@ -38,7 +62,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      const { id } = req.query || (req.body || {});
+      const id = req.query?.id || req.body?.id;
       if (!id) {
         return res.status(400).json({ error: 'Missing competition id for deletion.' });
       }

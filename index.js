@@ -20,6 +20,7 @@ app.use('/sw.js', (req, res) => res.sendFile(path.join(rootDir, 'sw.js')));
 app.use('/favicon.ico', (req, res) => res.sendFile(path.join(rootDir, 'assets', 'simika-logo.png')));
 
 // API Routes
+app.all('/api/competitions/reorder', require('./api/competitions'));
 app.all('/api/competitions', require('./api/competitions'));
 app.all('/api/teams', require('./api/teams'));
 app.all('/api/scores', require('./api/scores'));

@@ -17,7 +17,7 @@ module.exports = async function handler(req, res) {
     const { db } = await connectToDatabase();
     
     // Fetch all collections
-    const competitions = await db.collection('competitions').find({}).toArray();
+    const competitions = await db.collection('competitions').find({}).sort({ order: 1 }).toArray();
     const teams = await db.collection('teams').find({}).toArray();
     const scoreDocs = await db.collection('scores').find({}).toArray();
     const users = await db.collection('users').find({}).toArray();

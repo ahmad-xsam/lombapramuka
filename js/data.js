@@ -112,7 +112,8 @@ class DataStore {
 
   initStore() {
     if (localStorage.getItem(SIMIKA_COMPETITIONS_KEY) === null) {
-      localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(INITIAL_COMPETITIONS));
+      const initialWithOrder = INITIAL_COMPETITIONS.map((c, idx) => ({ ...c, order: idx }));
+      localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(initialWithOrder));
     }
     if (localStorage.getItem(SIMIKA_TEAMS_KEY) === null) {
       localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(INITIAL_TEAMS));
@@ -169,9 +170,16 @@ class DataStore {
       if (json.connected && json.data) {
         const { competitions, teams, scores, users } = json.data;
 
-        // If Mongo has competitions, update localStorage
+        // If Mongo has competitions, sort by order and update localStorage
         if (Array.isArray(competitions) && competitions.length > 0) {
+          competitions.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
           localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(competitions));
+        } else {
+          // If Mongo has no competitions, push local competitions to Mongo
+          const localComps = this.competitions;
+          if (localComps.length > 0) {
+            this.reorderCompetitions(localComps);
+          }
         }
 
         // Sync Teams
@@ -219,7 +227,11 @@ class DataStore {
 
   get competitions() {
     const val = localStorage.getItem(SIMIKA_COMPETITIONS_KEY);
-    return val !== null ? JSON.parse(val) : INITIAL_COMPETITIONS;
+    const list = val !== null ? JSON.parse(val) : INITIAL_COMPETITIONS;
+    if (Array.isArray(list)) {
+      return list.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+    }
+    return list;
   }
 
   get teams() {
@@ -277,8 +289,9 @@ class DataStore {
 
   reorderCompetitions(newOrderedList) {
     if (!Array.isArray(newOrderedList)) return;
-    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(newOrderedList));
-    this.postToMongo('/api/competitions/reorder', { competitions: newOrderedList });
+    const ordered = newOrderedList.map((c, idx) => ({ ...c, order: idx }));
+    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(ordered));
+    this.postToMongo('/api/competitions/reorder', { competitions: ordered });
   }
 
   moveCompetition(fromIndex, toIndex) {
@@ -309,11 +322,13 @@ class DataStore {
       name: compName,
       icon: compData.icon || 'trophy',
       type: compData.type || 'single', // 'single' | 'dual'
-      isCustom: true
+      isCustom: true,
+      order: current.length
     };
 
     current.push(newComp);
-    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(current));
+    const ordered = current.map((c, idx) => ({ ...c, order: idx }));
+    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(ordered));
 
     // Ensure score bucket exists
     const allScores = this.scores;
@@ -324,6 +339,7 @@ class DataStore {
 
     // Sync to MongoDB Atlas
     this.postToMongo('/api/competitions', newComp);
+    this.postToMongo('/api/competitions/reorder', { competitions: ordered });
 
     return newComp;
   }
@@ -345,10 +361,12 @@ class DataStore {
     };
 
     current[index] = updated;
-    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(current));
+    const ordered = current.map((c, idx) => ({ ...c, order: idx }));
+    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(ordered));
 
     // Sync to MongoDB Atlas
     this.postToMongo('/api/competitions', updated, 'PUT');
+    this.postToMongo('/api/competitions/reorder', { competitions: ordered });
 
     return updated;
   }
@@ -359,7 +377,8 @@ class DataStore {
       return false;
     }
     const updated = this.competitions.filter(c => c.id !== id);
-    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(updated));
+    const ordered = updated.map((c, idx) => ({ ...c, order: idx }));
+    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(ordered));
 
     const allScores = this.scores;
     if (allScores[id]) {
@@ -367,8 +386,9 @@ class DataStore {
       localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(allScores));
     }
 
-    // Sync deletion to MongoDB Atlas
-    this.postToMongo('/api/competitions', { id }, 'DELETE');
+    // Sync deletion & order update to MongoDB Atlas
+    this.postToMongo(`/api/competitions?id=${encodeURIComponent(id)}`, { id }, 'DELETE');
+    this.postToMongo('/api/competitions/reorder', { competitions: ordered });
     return true;
   }
 
