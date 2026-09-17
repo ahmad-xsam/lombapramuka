@@ -8,8 +8,11 @@ const ScoringComponent = {
   currentLomba: 'administrasi',
 
   render(container, selectedLombaId) {
-    if (selectedLombaId) {
+    const competitions = window.dataStore.competitions;
+    if (selectedLombaId && competitions.some(c => c.id === selectedLombaId)) {
       this.currentLomba = selectedLombaId;
+    } else if (!competitions.some(c => c.id === this.currentLomba)) {
+      this.currentLomba = competitions[0] ? competitions[0].id : 'administrasi';
     }
 
     const isLocked = window.dataStore.isCompetitionsLocked;
@@ -813,8 +816,8 @@ const ScoringComponent = {
       return;
     }
 
-    // Open Smart Validation & Final Check Verification Modal
-    this.openFinalCheckModal(teamId, scoreObj, validationResult);
+    // Direct Save and Sync immediately without Final Check modal
+    this.commitFinalScore(teamId, scoreObj);
   },
 
   openFinalCheckModal(teamId, scoreObj, validationResult) {
@@ -1215,10 +1218,7 @@ const ScoringComponent = {
   },
 
   closeModal() {
-    const elAdd = document.getElementById('add-lomba-modal');
-    if (elAdd) elAdd.remove();
-    const elEdit = document.getElementById('edit-lomba-modal');
-    if (elEdit) elEdit.remove();
+    document.querySelectorAll('#score-input-modal, #score-finalcheck-modal, #add-lomba-modal, #edit-lomba-modal').forEach(el => el.remove());
   },
 
   openEditLombaModal(lombaId, currentName, currentIcon) {
