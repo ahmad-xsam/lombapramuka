@@ -7,12 +7,12 @@
 const CombinedComponent = {
   // Default selected competitions to combine (dynamically populated from window.COMPETITIONS)
   get selectedLombaIds() {
-    if (!this._selectedLombaIds) {
-      this._selectedLombaIds = COMPETITIONS.map(c => c.id);
-    }
-    // Filter out deleted competitions if any
     const validIds = COMPETITIONS.map(c => c.id);
-    this._selectedLombaIds = this._selectedLombaIds.filter(id => validIds.includes(id));
+    if (!this._selectedLombaIds) {
+      this._selectedLombaIds = [...validIds];
+    } else {
+      this._selectedLombaIds = validIds.filter(id => this._selectedLombaIds.includes(id));
+    }
     return this._selectedLombaIds;
   },
 

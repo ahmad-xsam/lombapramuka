@@ -19,16 +19,16 @@ const CATEGORIES = [
 ];
 
 const INITIAL_COMPETITIONS = [
-  { id: 'administrasi', name: 'Lomba Administrasi', icon: 'file-text', type: 'administrasi' },
-  { id: 'banksoal', name: 'Lomba Bank Soal', icon: 'help-circle', type: 'single' },
-  { id: 'p3k', name: 'Lomba P3K', icon: 'heart-pulse', type: 'dual' },
-  { id: 'pioneering', name: 'Lomba Pioneering', icon: 'compass', type: 'single' },
-  { id: 'sandi', name: 'Lomba Sandi', icon: 'key', type: 'single' },
-  { id: 'morse', name: 'Lomba Morse', icon: 'radio', type: 'single' },
-  { id: 'semaphore', name: 'Lomba Semaphore', icon: 'flag', type: 'single' },
-  { id: 'ketangkasan', name: 'Lomba Ketangkasan', icon: 'zap', type: 'single' },
-  { id: 'joged_komando', name: 'Lomba Joged Komando', icon: 'music', type: 'school' },
-  { id: 'lkbb', name: 'Lomba LKBB', icon: 'shield', type: 'school' }
+  { id: 'administrasi', name: 'Lomba Administrasi', icon: 'file-text', type: 'administrasi', order: 0 },
+  { id: 'banksoal', name: 'Lomba Bank Soal', icon: 'help-circle', type: 'single', order: 1 },
+  { id: 'p3k', name: 'Lomba P3K', icon: 'heart-pulse', type: 'dual', order: 2 },
+  { id: 'pioneering', name: 'Lomba Pioneering', icon: 'compass', type: 'single', order: 3 },
+  { id: 'sandi', name: 'Lomba Sandi', icon: 'key', type: 'single', order: 4 },
+  { id: 'morse', name: 'Lomba Morse', icon: 'radio', type: 'single', order: 5 },
+  { id: 'semaphore', name: 'Lomba Semaphore', icon: 'flag', type: 'single', order: 6 },
+  { id: 'ketangkasan', name: 'Lomba Ketangkasan', icon: 'zap', type: 'single', order: 7 },
+  { id: 'joged_komando', name: 'Lomba Joged Komando', icon: 'music', type: 'school', order: 8 },
+  { id: 'lkbb', name: 'Lomba LKBB', icon: 'shield', type: 'school', order: 9 }
 ];
 
 const INITIAL_TEAMS = [
@@ -229,7 +229,9 @@ class DataStore {
     const val = localStorage.getItem(SIMIKA_COMPETITIONS_KEY);
     const list = val !== null ? JSON.parse(val) : INITIAL_COMPETITIONS;
     if (Array.isArray(list)) {
-      return list.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+      return [...list]
+        .map((c, idx) => ({ ...c, order: typeof c.order === 'number' ? c.order : idx }))
+        .sort((a, b) => a.order - b.order);
     }
     return list;
   }
