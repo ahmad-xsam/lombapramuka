@@ -12,6 +12,10 @@ const PrintComponent = {
   renderPrintPage(container) {
     if (!container) return;
 
+    if (this.currentLomba !== 'combined' && this.currentLomba !== 'all_comp' && !COMPETITIONS.some(c => c.id === this.currentLomba)) {
+      this.currentLomba = 'combined';
+    }
+
     const activeCatObj = CATEGORIES.find(c => c.id === this.currentCategory);
     const catLabel = activeCatObj ? activeCatObj.label : 'Semua Kategori (SD, SMP, & Penegak)';
 

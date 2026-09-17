@@ -9,6 +9,10 @@ const RankingComponent = {
 
   render(container) {
     const activeCat = window.currentCategoryFilter || 'all';
+    if (this.activeView !== 'lkbb_breakdown' && !COMPETITIONS.some(c => c.id === this.activeView)) {
+      this.activeView = 'lkbb_breakdown';
+    }
+
     const lkbbList = window.Calculators.getLKBBSubLeaderboards(activeCat);
 
     container.innerHTML = `
