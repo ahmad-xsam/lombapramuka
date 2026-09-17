@@ -84,13 +84,13 @@ const PublicComponent = {
           <!-- Hero Main Content Grid -->
           <div class="crimson-hero-content">
             <div class="crimson-tagline">
-              <span class="flash-icon">⚡</span> COMPETITION MANAGEMENT SYSTEM
+              <span class="flash-icon">⚡</span> SELAMAT DATANG
             </div>
 
             <h1 class="crimson-giant-title">
-              <span class="brand-red-text">TUMBUH.</span><br>
-              <span class="brand-red-text">BERKARYA.</span><br>
-              <span class="brand-red-text">BERMAKNA.</span>
+              <span class="brand-red-text">TUMBUH</span><br>
+              <span class="brand-red-text">BERKARYA</span><br>
+              <span class="brand-red-text">BERMAKNA</span>
             </h1>
 
             <p class="crimson-hero-desc">
@@ -109,7 +109,7 @@ const PublicComponent = {
                   <path d="M16.5 12a4.5 4.5 0 0 0-4.5-4.5"/>
                   <path d="M6 19.5a9 9 0 0 1-3-7.5 9 9 0 0 1 9-9 9 9 0 0 1 9 9 9 9 0 0 1-3 7.5"/>
                 </svg>
-                <span>OFFICIAL PRAMUKA SCORING ENGINE</span>
+                <span>SIMIKA REKAP ONLINE</span>
               </div>
             </div>
 
@@ -142,7 +142,7 @@ const PublicComponent = {
             </div>
             
             <h2 class="about-title">
-              Sistem Management Rekapitulasi Lomba Pramuka (SiMika)
+              Sistem Management Rekapitulasi Lomba Pramuka SIMIKA
             </h2>
             
             <p class="about-desc">
