@@ -60,9 +60,7 @@ const INITIAL_TEAMS = [
 ];
 
 const INITIAL_USERS = [
-  { username: 'admin', password: '123', name: 'Kak Juri Utama', role: 'Super Admin', avatar: 'SA' },
-  { username: 'juri', password: '123', name: 'Tim Juri Lapangan', role: 'Juri Penilai', avatar: 'TJ' },
-  { username: 'panitia', password: '123', name: 'Panitia Rekap', role: 'Operator Rekap', avatar: 'PR' }
+  { username: 'ahmadsam', password: '123', name: 'ahmadsam', role: 'Super Admin', avatar: 'B4' }
 ];
 
 const INITIAL_SCORES = {
@@ -136,8 +134,30 @@ class DataStore {
         }
       }
     }
-    if (localStorage.getItem(SIMIKA_USERS_KEY) === null) {
+    const rawUsers = localStorage.getItem(SIMIKA_USERS_KEY);
+    if (rawUsers === null) {
       localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(INITIAL_USERS));
+    } else {
+      let list = JSON.parse(rawUsers) || [];
+      // Clean up sample demo accounts ('admin', 'juri', 'panitia')
+      list = list.filter(u => !['admin', 'juri', 'panitia'].includes(u.username));
+      if (!list.some(u => u.username === 'ahmadsam')) {
+        list.unshift({ username: 'ahmadsam', password: '123', name: 'ahmadsam', role: 'Super Admin', avatar: 'B4' });
+      }
+      localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(list));
+    }
+
+    // Ensure session user is valid
+    const sessionRaw = localStorage.getItem(SIMIKA_SESSION_KEY);
+    if (sessionRaw) {
+      try {
+        const sessUser = JSON.parse(sessionRaw);
+        if (sessUser && ['admin', 'juri', 'panitia'].includes(sessUser.username)) {
+          const currentUserList = JSON.parse(localStorage.getItem(SIMIKA_USERS_KEY)) || INITIAL_USERS;
+          const validUser = currentUserList.find(u => u.username === 'ahmadsam') || currentUserList[0];
+          localStorage.setItem(SIMIKA_SESSION_KEY, JSON.stringify(validUser));
+        }
+      } catch (e) {}
     }
   }
 
@@ -174,7 +194,10 @@ class DataStore {
         }
 
         if (Array.isArray(users) && users.length > 0) {
-          localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(users));
+          const filteredUsers = users.filter(u => !['admin', 'juri', 'panitia'].includes(u.username));
+          if (filteredUsers.length > 0) {
+            localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(filteredUsers));
+          }
         }
       }
     } catch (e) {

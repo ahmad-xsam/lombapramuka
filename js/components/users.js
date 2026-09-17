@@ -112,6 +112,25 @@ const UsersComponent = {
     this.renderFormModal(`Ubah / Edit Akun (${username})`, user);
   },
 
+  validatePasswordStrength(pwd) {
+    if (!pwd || pwd.length < 6) {
+      return 'Password minimal 6 karakter!';
+    }
+    if (!/[A-Z]/.test(pwd)) {
+      return 'Password wajib memiliki minimal 1 huruf besar (A-Z)!';
+    }
+    if (!/[a-z]/.test(pwd)) {
+      return 'Password wajib memiliki minimal 1 huruf kecil (a-z)!';
+    }
+    if (!/[0-9]/.test(pwd)) {
+      return 'Password wajib memiliki minimal 1 angka (0-9)!';
+    }
+    if (!/[^A-Za-z0-9]/.test(pwd)) {
+      return 'Password wajib memiliki minimal 1 karakter/simbol (contoh: @, #, $, !, %, dll)!';
+    }
+    return null;
+  },
+
   renderFormModal(title, user) {
     this.closeModal();
 
@@ -119,26 +138,29 @@ const UsersComponent = {
 
     const modalHTML = `
       <div class="modal-overlay open" id="user-modal">
-        <div class="modal-container" style="max-width: 500px;">
+        <div class="modal-container" style="max-width: 520px;">
           <div class="modal-header">
             <h3 class="modal-title">${title}</h3>
             <button class="btn-outline" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;" onclick="UsersComponent.closeModal()">✕</button>
           </div>
           <form onsubmit="UsersComponent.saveUser(event)">
-            <div id="user-modal-error" style="display: none;" class="login-alert-danger"></div>
+            <div id="user-modal-error" style="display: none; margin-bottom: 0.85rem;" class="login-alert-danger"></div>
 
             <div class="form-grid" style="grid-template-columns: 1fr; gap: 0.75rem;">
               <div class="form-group">
                 <label>Username (ID Akses Login) *</label>
-                <input type="text" id="input-user-username" class="form-control" placeholder="Contoh: juri_lkbb" value="${isEdit ? user.username : ''}" required />
+                <input type="text" id="input-user-username" class="form-control" placeholder="Contoh: ahmadsam" value="${isEdit ? user.username : ''}" required />
               </div>
               <div class="form-group">
                 <label>Password *</label>
-                <input type="text" id="input-user-password" class="form-control" placeholder="Masukkan password akun" value="${isEdit ? user.password : ''}" required />
+                <input type="text" id="input-user-password" class="form-control" placeholder="Contoh: Rahasia#2026" value="${isEdit ? user.password : ''}" required />
+                <small style="display: block; margin-top: 0.35rem; color: #94a3b8; font-size: 0.74rem; line-height: 1.4;">
+                  🔒 Password wajib kombinasi: <strong>Minimal 6 Karakter, Huruf Besar (A-Z), Huruf Kecil (a-z), Angka (0-9), & Karakter/Simbol (@#$!)</strong>.
+                </small>
               </div>
               <div class="form-group">
                 <label>Nama Lengkap Kakak *</label>
-                <input type="text" id="input-user-name" class="form-control" placeholder="Contoh: Kak Budi Penilai" value="${isEdit ? user.name : ''}" required />
+                <input type="text" id="input-user-name" class="form-control" placeholder="Contoh: Kak Ahmad Samsudin, S.T." value="${isEdit ? user.name : ''}" required />
               </div>
               <div class="form-group">
                 <label>Peran / Access Role *</label>
@@ -150,7 +172,7 @@ const UsersComponent = {
               </div>
             </div>
 
-            <div class="modal-footer" style="margin-top: 1rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
+            <div class="modal-footer" style="margin-top: 1.15rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
               <button type="button" class="btn-outline" onclick="UsersComponent.closeModal()">Batal</button>
               <button type="submit" class="btn-yellow-pill">
                 ${isEdit ? 'Simpan Perubahan Akun' : 'Simpan Akun Admin Baru'}
@@ -187,6 +209,22 @@ const UsersComponent = {
     }
 
     const users = window.dataStore.users;
+    const existingUser = this.editingUsername ? users.find(u => u.username === this.editingUsername) : null;
+
+    // Validate strong password if creating a new user or if existing user changed password
+    const isPasswordChanged = !existingUser || existingUser.password !== password;
+    if (isPasswordChanged) {
+      const passError = this.validatePasswordStrength(password);
+      if (passError) {
+        if (errorBox) {
+          errorBox.textContent = `❌ ${passError}`;
+          errorBox.style.display = 'block';
+        }
+        return;
+      }
+    }
+
+    const avatarCode = name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() || 'SA';
 
     if (this.editingUsername) {
       if (username !== this.editingUsername && users.some(u => u.username === username)) {
@@ -196,7 +234,7 @@ const UsersComponent = {
         }
         return;
       }
-      window.dataStore.updateUser(this.editingUsername, { username, password, name, role });
+      window.dataStore.updateUser(this.editingUsername, { username, password, name, role, avatar: avatarCode });
     } else {
       if (users.some(u => u.username === username)) {
         if (errorBox) {
@@ -205,7 +243,7 @@ const UsersComponent = {
         }
         return;
       }
-      window.dataStore.addUser({ username, password, name, role });
+      window.dataStore.addUser({ username, password, name, role, avatar: avatarCode });
     }
 
     this.closeModal();
