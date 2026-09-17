@@ -224,7 +224,15 @@ class DataStore {
 
   get teams() {
     const val = localStorage.getItem(SIMIKA_TEAMS_KEY);
-    return val !== null ? JSON.parse(val) : INITIAL_TEAMS;
+    const list = val !== null ? JSON.parse(val) : INITIAL_TEAMS;
+    if (Array.isArray(list)) {
+      return list.sort((a, b) => {
+        const idA = String(a.id || a.idRegu || '').trim();
+        const idB = String(b.id || b.idRegu || '').trim();
+        return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+      });
+    }
+    return list;
   }
 
   get scores() {
@@ -366,14 +374,22 @@ class DataStore {
 
   getTeams(categoryFilter = 'all') {
     const all = this.teams;
-    if (!categoryFilter || categoryFilter === 'all') return all;
-    if (categoryFilter === 'sd' || categoryFilter === 'smp' || categoryFilter === 'penegak') {
-      return all.filter(t => {
-        const catObj = CATEGORIES.find(c => c.id === t.category);
-        return catObj ? catObj.level === categoryFilter : t.category.startsWith(categoryFilter + '_');
-      });
+    let filtered = all;
+    if (categoryFilter && categoryFilter !== 'all') {
+      if (categoryFilter === 'sd' || categoryFilter === 'smp' || categoryFilter === 'penegak') {
+        filtered = all.filter(t => {
+          const catObj = CATEGORIES.find(c => c.id === t.category);
+          return catObj ? catObj.level === categoryFilter : t.category.startsWith(categoryFilter + '_');
+        });
+      } else {
+        filtered = all.filter(t => t.category === categoryFilter);
+      }
     }
-    return all.filter(t => t.category === categoryFilter);
+    return filtered.sort((a, b) => {
+      const idA = String(a.id || a.idRegu || '').trim();
+      const idB = String(b.id || b.idRegu || '').trim();
+      return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+    });
   }
 
   getTeamById(id) {

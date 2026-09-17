@@ -245,7 +245,12 @@ const Calculators = {
         };
       });
 
-      results.sort((a, b) => b.totalScore - a.totalScore);
+      results.sort((a, b) => {
+        if (b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
+        const idA = String(a.team?.id || a.schoolId || '').trim();
+        const idB = String(b.team?.id || b.schoolId || '').trim();
+        return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+      });
 
       let currentRank = 1;
       results.forEach((item, index) => {
@@ -273,7 +278,12 @@ const Calculators = {
       };
     });
 
-    results.sort((a, b) => b.totalScore - a.totalScore);
+    results.sort((a, b) => {
+      if (b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
+      const idA = String(a.team?.id || '').trim();
+      const idB = String(b.team?.id || '').trim();
+      return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+    });
 
     let currentRank = 1;
     results.forEach((item, index) => {
@@ -339,7 +349,12 @@ const Calculators = {
     });
 
     const assignRanks = (list, scoreKey, rankKey) => {
-      list.sort((a, b) => b[scoreKey] - a[scoreKey]);
+      list.sort((a, b) => {
+        if (b[scoreKey] !== a[scoreKey]) return b[scoreKey] - a[scoreKey];
+        const idA = String(a.team?.id || a.schoolId || '').trim();
+        const idB = String(b.team?.id || b.schoolId || '').trim();
+        return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+      });
       let currentRank = 1;
       list.forEach((item, index) => {
         if (index > 0 && item[scoreKey] < list[index - 1][scoreKey]) {
@@ -400,8 +415,13 @@ const Calculators = {
       };
     });
 
-    // Sort descending by combined total
-    results.sort((a, b) => b.combinedTotal - a.combinedTotal);
+    // Sort descending by combined total, then ascending by ID Regu
+    results.sort((a, b) => {
+      if (b.combinedTotal !== a.combinedTotal) return b.combinedTotal - a.combinedTotal;
+      const idA = String(a.team?.id || '').trim();
+      const idB = String(b.team?.id || '').trim();
+      return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+    });
 
     let currentRank = 1;
     results.forEach((item, index) => {
