@@ -113,13 +113,13 @@ class DataStore {
   }
 
   initStore() {
-    if (!localStorage.getItem(SIMIKA_COMPETITIONS_KEY)) {
+    if (localStorage.getItem(SIMIKA_COMPETITIONS_KEY) === null) {
       localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(INITIAL_COMPETITIONS));
     }
-    if (!localStorage.getItem(SIMIKA_TEAMS_KEY)) {
+    if (localStorage.getItem(SIMIKA_TEAMS_KEY) === null) {
       localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(INITIAL_TEAMS));
     }
-    if (!localStorage.getItem(SIMIKA_SCORES_KEY)) {
+    if (localStorage.getItem(SIMIKA_SCORES_KEY) === null) {
       localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(INITIAL_SCORES));
     } else {
       const storedScores = JSON.parse(localStorage.getItem(SIMIKA_SCORES_KEY)) || {};
@@ -136,7 +136,7 @@ class DataStore {
         }
       }
     }
-    if (!localStorage.getItem(SIMIKA_USERS_KEY)) {
+    if (localStorage.getItem(SIMIKA_USERS_KEY) === null) {
       localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(INITIAL_USERS));
     }
   }
@@ -149,30 +149,32 @@ class DataStore {
       if (json.connected && json.data) {
         const { competitions, teams, scores, users } = json.data;
 
-        // If MongoDB has competitions, update localStorage
+        // If Mongo has competitions, update localStorage
         if (Array.isArray(competitions) && competitions.length > 0) {
           localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(competitions));
-        } else {
-          // Push initial competitions to MongoDB
-          this.competitions.forEach(c => this.postToMongo('/api/competitions', c));
         }
 
-        if (Array.isArray(teams) && teams.length > 0) {
-          localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(teams));
-        } else {
-          this.teams.forEach(t => this.postToMongo('/api/teams', t));
+        // Sync Teams
+        const isWiped = localStorage.getItem('simika_data_wiped_v1') === 'true';
+        if (Array.isArray(teams)) {
+          if (teams.length > 0) {
+            localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(teams));
+          } else if (isWiped) {
+            localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify([]));
+          }
         }
 
-        if (scores && Object.keys(scores).length > 0) {
-          localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(scores));
-        } else {
-          this.postToMongo('/api/scores', { fullScores: this.scores });
+        // Sync Scores
+        if (scores && typeof scores === 'object') {
+          if (Object.keys(scores).length > 0) {
+            localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(scores));
+          } else if (isWiped) {
+            localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify({}));
+          }
         }
 
         if (Array.isArray(users) && users.length > 0) {
           localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(users));
-        } else {
-          this.users.forEach(u => this.postToMongo('/api/users', u));
         }
       }
     } catch (e) {
@@ -193,15 +195,18 @@ class DataStore {
   }
 
   get competitions() {
-    return JSON.parse(localStorage.getItem(SIMIKA_COMPETITIONS_KEY)) || INITIAL_COMPETITIONS;
+    const val = localStorage.getItem(SIMIKA_COMPETITIONS_KEY);
+    return val !== null ? JSON.parse(val) : INITIAL_COMPETITIONS;
   }
 
   get teams() {
-    return JSON.parse(localStorage.getItem(SIMIKA_TEAMS_KEY)) || [];
+    const val = localStorage.getItem(SIMIKA_TEAMS_KEY);
+    return val !== null ? JSON.parse(val) : INITIAL_TEAMS;
   }
 
   get scores() {
-    return JSON.parse(localStorage.getItem(SIMIKA_SCORES_KEY)) || {};
+    const val = localStorage.getItem(SIMIKA_SCORES_KEY);
+    return val !== null ? JSON.parse(val) : INITIAL_SCORES;
   }
 
   get users() {
@@ -479,14 +484,30 @@ class DataStore {
     this.postToMongo('/api/users', { username }, 'DELETE');
   }
 
-  resetData() {
-    localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(INITIAL_COMPETITIONS));
-    localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(INITIAL_TEAMS));
-    localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(INITIAL_SCORES));
-    localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(INITIAL_USERS));
+  resetData(isFullWipe = true) {
+    if (isFullWipe) {
+      // 100% WIPE / ERASE ALL TEAMS & SCORES
+      localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify([]));
+      localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify({}));
+      localStorage.setItem('simika_data_wiped_v1', 'true');
+      localStorage.removeItem('simika_draw_order');
+      localStorage.removeItem('simika_draw_data');
 
-    // Reset MongoDB Atlas
-    this.postToMongo('/api/scores', { fullScores: INITIAL_SCORES });
+      // Sync Delete All to MongoDB Atlas
+      this.postToMongo('/api/teams?all=true', {}, 'DELETE');
+      this.postToMongo('/api/scores?all=true', {}, 'DELETE');
+    } else {
+      // Restore sample demo data
+      localStorage.setItem(SIMIKA_COMPETITIONS_KEY, JSON.stringify(INITIAL_COMPETITIONS));
+      localStorage.setItem(SIMIKA_TEAMS_KEY, JSON.stringify(INITIAL_TEAMS));
+      localStorage.setItem(SIMIKA_SCORES_KEY, JSON.stringify(INITIAL_SCORES));
+      localStorage.setItem(SIMIKA_USERS_KEY, JSON.stringify(INITIAL_USERS));
+      localStorage.removeItem('simika_data_wiped_v1');
+
+      // Sync Seed Data to MongoDB Atlas
+      this.postToMongo('/api/scores', { fullScores: INITIAL_SCORES });
+      INITIAL_TEAMS.forEach(t => this.postToMongo('/api/teams', t));
+    }
   }
 }
 

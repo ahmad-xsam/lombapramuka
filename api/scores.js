@@ -63,6 +63,19 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ success: true, lombaId, teamId });
     }
 
+    if (req.method === 'DELETE') {
+      const { all, lombaId } = req.query || (req.body || {});
+      if (all === 'true' || all === true) {
+        await collection.deleteMany({});
+        return res.status(200).json({ success: true, deletedAll: true });
+      }
+      if (lombaId) {
+        await collection.deleteOne({ lombaId });
+        return res.status(200).json({ success: true, deletedLombaId: lombaId });
+      }
+      return res.status(400).json({ error: 'Missing lombaId or all parameter' });
+    }
+
     return res.status(405).json({ error: 'Method Not Allowed' });
   } catch (error) {
     console.error('[API scores error]:', error);

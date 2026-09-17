@@ -37,7 +37,11 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      const { id } = req.query || (req.body || {});
+      const { id, all } = req.query || (req.body || {});
+      if (all === 'true' || all === true) {
+        await collection.deleteMany({});
+        return res.status(200).json({ success: true, deletedAll: true });
+      }
       if (!id) {
         return res.status(400).json({ error: 'Missing team id' });
       }
